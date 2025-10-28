@@ -56,9 +56,17 @@
       <dd>{{ invoice_number }}</dd>
       <dt>Date d'émission</dt>
       <dd>{{ invoice_date|date:"d/m/Y" }}</dd>
-      {% if service_date %}
-      <dt>Date de la prestation</dt>
-      <dd>{{ service_date|date:"d/m/Y" }}</dd>
+      {% if service_date_start or service_date_end %}
+      <dt>Période de prestation</dt>
+      <dd>
+        {% if service_date_start and service_date_end %}
+        Du {{ service_date_start|date:"d/m/Y" }} <br> au {{ service_date_end|date:"d/m/Y" }}
+        {% elif service_date_start %}
+          À partir du {{ service_date_start|date:"d/m/Y" }}
+        {% elif service_date_end %}
+          Jusqu'au {{ service_date_end|date:"d/m/Y" }}
+        {% endif %}
+      </dd>
       {% endif %}
       <dt>Date d'échéance</dt>
       <dd>{{ due_date|date:"d/m/Y" }}</dd>
@@ -115,11 +123,14 @@
       {% endif %}
 
       {% if penalties_note %}
-      <p>{{ penalties_note }}</p>
+      <div style="margin-top: 1em; padding: 0.75em; background: #FEF3C7; border-left: 3px solid #F59E0B; border-radius: 4px;">
+        <strong style="color: #92400E;">⚠️ Pénalités de retard:</strong>
+        <p style="margin: 0.5em 0 0 0; color: #92400E;">{{ penalties_note }}</p>
+      </div>
       {% endif %}
 
       {% if recovery_note %}
-      <p>{{ recovery_note }}</p>
+      <p style="margin-top: 0.75em; color: #6B7280; font-size: 0.9em;">{{ recovery_note }}</p>
       {% endif %}
 
       {% if autoliquidation %}

@@ -120,8 +120,17 @@ class InvoiceForm(forms.Form):
         })
     )
     
-    service_date = forms.DateField(
-        label='Date de la prestation',
+    service_date_start = forms.DateField(
+        label='Début de la prestation',
+        required=False,
+        widget=forms.DateInput(attrs={
+            'type': 'date',
+            'class': 'form-control'
+        })
+    )
+
+    service_date_end = forms.DateField(
+        label='Fin de la prestation',
         required=False,
         widget=forms.DateInput(attrs={
             'type': 'date',
