@@ -1,35 +1,29 @@
+/* Polices système pour performance */
 @font-face {
-  font-family: Pacifico;
-  src: url(pacifico.ttf);
+  font-family: 'Pacifico';
+  src: local('Arial'), local('Helvetica');
+  font-weight: normal;
+  font-style: normal;
 }
-@font-face {
-  font-family: Source Sans Pro;
-  font-weight: 400;
-  src: url(SourceSans3-Regular.ttf);
-}
-@font-face {
-  font-family: Source Sans Pro;
-  font-weight: 700;
-  src: url(SourceSans3-Bold.ttf);
-}
+/* Utiliser des polices système pour éviter le chargement externe */
 
 @page {
-  font-family: Pacifico;
+  font-family: Arial, sans-serif;
   margin: 3cm;
   @bottom-left {
-    color: #1ee494;
-    content: '♥ Thank you!';
+    color: #b1b4b3;
+    content: 'Thank you!';
   }
   @bottom-right {
     color: #a9a;
-    content: 'contact@courtbouillon.org | courtbouillon.org';
+    content: 'Made with EasyInvoice';
     font-size: 9pt;
   }
 }
 
 html {
   color: #14213d;
-  font-family: Source Sans Pro;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 11pt;
   line-height: 1.6;
 }
@@ -85,8 +79,9 @@ address#to > * {
 
 h1 {
   color: #1ee494;
-  font-family: Pacifico;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 40pt;
+  font-weight: bold;
   margin: 0;
 }
 
@@ -157,18 +152,22 @@ th:last-of-type, td:last-of-type {
   text-align: right;
 }
 footer {
-  content: '';
   display: block;
-  height: 6cm;
+  margin-top: 1em;
 }
 table#total {
   background: #f6f6f6;
-  border-color: #f6f6f6;
-  border-style: solid;
-  border-width: 2cm 3cm;
-  bottom: 0;
-  font-size: 20pt;
-  margin: 0 -3cm;
-  position: absolute;
-  width: 18cm;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12pt;
+  margin: 1em 0 0.5em 0;
+  padding: 0.4cm;
+  width: 100%;
+}
+table#total th {
+  border-bottom: none;
+  padding: 0.3cm;
+}
+table#total td {
+  padding: 0.3cm;
 }

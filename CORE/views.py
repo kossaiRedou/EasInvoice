@@ -115,7 +115,10 @@ def generate_invoice_form(request):
                 )
 
             try:
-                html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
+                # Charger le HTML sans base_url pour éviter requêtes réseau
+                html = HTML(string=html_string, base_url=None)
+                
+                # Charger le CSS local de façon optimisée
                 css_file = Path(__file__).resolve().parent.parent / 'static' / 'CORE' / 'css' / 'invoice.css'
                 if css_file.exists():
                     pdf = html.write_pdf(stylesheets=[CSS(css_file)])
@@ -128,7 +131,8 @@ def generate_invoice_form(request):
                 return response
 
             except Exception as e:
-                return HttpResponse(f"Erreur lors de la génération du PDF: {str(e)}", status=500)
+                import traceback
+                return HttpResponse(f"Erreur lors de la génération du PDF: {str(e)}<br><pre>{traceback.format_exc()}</pre>", status=500)
     else:
         form = InvoiceForm(initial={
             'invoice_date': datetime.now().date(),

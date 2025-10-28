@@ -8,22 +8,15 @@
       .ei-badge {
         background: #1ee494;
         color: white;
-        padding: 6px 12px;
-        border-radius: 6px;
-        font-size: 0.75em;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.7em;
         font-weight: bold;
         display: inline-block;
-        margin-bottom: 8px;
-        letter-spacing: 0.5px;
+        margin: 2px 0;
       }
-      .addr-label { color: #a9a; text-transform: uppercase; font-size: 10pt; display: block; margin-bottom: 4px; }
-      #from, #to {
-        line-height: 1.0;
-        margin-bottom: 0.1em;
-      }
-      address {
-        line-height: 1.2;
-      }
+      .addr-label { color: #a9a; text-transform: uppercase; font-size: 9pt; display: block; margin-bottom: 2px; }
+      address { line-height: 1.2; margin: 0; }
     </style>
   </head>
 
@@ -92,7 +85,7 @@
         {% endfor %}
       </tbody>
     </table>
-
+    
     <footer>
       <table id="total">
         <thead>
@@ -112,29 +105,27 @@
       </table>
 
       {% if vat_note %}
-      <p style="margin-top: 1em;">{{ vat_note }}</p>
+      <p style="margin-top: 0.5em; font-size: 0.85em;">{{ vat_note }}</p>
       {% endif %}
-
+      
       {% if payment_terms %}
-      <br>
-      <br>
-      <p>Modalités de paiement:</p>
-      <h4>{{ payment_terms }}</h4>
+      <p style="margin-top: 0.5em; margin-bottom: 0.3em; font-size: 0.9em;"><strong>Modalités de paiement:</strong></p>
+      <p style="margin: 0; font-size: 0.85em;">{{ payment_terms }}</p>
       {% endif %}
 
       {% if penalties_note %}
-      <div style="margin-top: 1em; padding: 0.75em; background: #FEF3C7; border-left: 3px solid #F59E0B; border-radius: 4px;">
-        <strong style="color: #92400E;">⚠️ Pénalités de retard:</strong>
-        <p style="margin: 0.5em 0 0 0; color: #92400E;">{{ penalties_note }}</p>
+      <div style="margin-top: 0.5em; padding: 0.5em; background: #FEF3C7; border-left: 3px solid #F59E0B; border-radius: 4px;">
+        <strong style="color: #92400E; font-size: 0.85em;">Pénalités de retard:</strong>
+        <p style="margin: 0.3em 0 0 0; color: #92400E; font-size: 0.8em;">{{ penalties_note }}</p>
       </div>
       {% endif %}
 
       {% if recovery_note %}
-      <p style="margin-top: 0.75em; color: #6B7280; font-size: 0.9em;">{{ recovery_note }}</p>
+      <p style="margin-top: 0.5em; color: #6B7280; font-size: 0.8em;">{{ recovery_note }}</p>
       {% endif %}
 
       {% if autoliquidation %}
-      <h4>Autoliquidation</h4>
+      <p style="margin-top: 0.5em; font-size: 0.85em;"><strong>Autoliquidation</strong></p>
       {% endif %}
     </footer>
 
