@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyInvoice - Créer une facture</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        .invoice-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 3rem;
+        }
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .invoice-header h1 {
+            color: #667eea;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .invoice-header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        .section-title {
+            color: #667eea;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 0.75rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: transform 0.2s;
+        }
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+        }
+        .form-hint { font-size: .9rem; color: #6c757d; }
+    </style>
+    <script>
+      document.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-action="remove-item"]');
+        if (!btn) return;
+        const row = btn.closest('.item-row');
+        if (!row) return;
+        const cb = row.querySelector('input[type="checkbox"]');
+        if (cb) cb.checked = true;
+        row.style.display = 'none';
+      });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-9">
+                <div class="invoice-card">
+                    <!-- Header -->
+                    <div class="invoice-header">
+                        <h1>EasInvoice</h1>
+                        <p>Créez des factures professionnelles en quelques clics</p>
+                    </div>
+
+                    {% if not weasyprint_available %}
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Attention:</strong> WeasyPrint n'est pas installé. Installez-le avec: <code>pip install WeasyPrint</code>
+                    </div>
+                    {% endif %}
+
+                    <!-- Formulaire -->
+                    <form method="post">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        <!-- Informations de l'émetteur -->
+                        <h3 class="section-title">Vos informations</h3>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.from_name.label }}</label>
+                                {{ form.from_name }}
+                                <div class="form-check mt-2">
+                                    {{ form.is_ei }} <label class="form-check-label">{{ form.is_ei.label }}</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.invoice_number.label }}</label>
+                                {{ form.invoice_number }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.from_address.label }}</label>
+                            {{ form.from_address }}
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.from_city.label }}</label>
+                                {{ form.from_city }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.from_email.label }}</label>
+                                {{ form.from_email }}
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.siret.label }}</label>
+                                {{ form.siret }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.rcs.label }}</label>
+                                {{ form.rcs }}
+                            </div>
+                        </div>
+
+                        <!-- Informations du client -->
+                        <h3 class="section-title">Informations client</h3>
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.to_name.label }}</label>
+                            {{ form.to_name }}
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.to_address.label }}</label>
+                            {{ form.to_address }}
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.to_city.label }}</label>
+                                {{ form.to_city }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.to_email.label }}</label>
+                                {{ form.to_email }}
+                            </div>
+                        </div>
+
+                        <!-- Dates -->
+                        <h3 class="section-title">Dates</h3>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">{{ form.invoice_date.label }}</label>
+                                {{ form.invoice_date }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">{{ form.service_date.label }}</label>
+                                {{ form.service_date }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">{{ form.due_date.label }}</label>
+                                {{ form.due_date }}
+                            </div>
+                        </div>
+
+                        <!-- Articles -->
+                        <h3 class="section-title">Lignes de facture</h3>
+                        {% if items_formset.non_form_errors %}
+                        <div class="alert alert-danger">{{ items_formset.non_form_errors }}</div>
+                        {% endif %}
+                        <div id="items-container">
+                            <input type="hidden" name="items-TOTAL_FORMS" id="id_items-TOTAL_FORMS" value="{{ items_formset.total_form_count }}">
+                            <input type="hidden" name="items-INITIAL_FORMS" value="0">
+                            <input type="hidden" name="items-MIN_NUM_FORMS" value="0">
+                            <input type="hidden" name="items-MAX_NUM_FORMS" value="1000">
+
+                            {% for form_item in items_formset.forms %}
+                                {% if form_item.errors %}
+                                <div class="alert alert-danger">{{ form_item.errors }}</div>
+                                {% endif %}
+                                {% include 'CORE/_item_row.html' with form=form_item index=forloop.counter0 %}
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <button type="button"
+                                    class="btn btn-outline-primary"
+                                    hx-post="{% url 'CORE:add_item_row' %}"
+                                    hx-include="#id_items-TOTAL_FORMS"
+                                    hx-target="#items-container"
+                                    hx-swap="beforeend">
+                                + Ajouter une ligne
+                            </button>
+                        </div>
+
+                        <!-- TVA -->
+                        <h3 class="section-title">TVA</h3>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                <div class="form-check mt-4">
+                                    {{ form.is_vat_exempt }} <label class="form-check-label">{{ form.is_vat_exempt.label }}</label>
+                                </div>
+                                <div class="form-hint">Si coché, la TVA ne s'applique pas.</div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">{{ form.vat_rate.label }}</label>
+                                {{ form.vat_rate }}
+                                <div class="form-hint">Ignoré si franchise de TVA.</div>
+                            </div>
+                        </div>
+
+                        <!-- Conditions de paiement -->
+                        <h3 class="section-title">Conditions de paiement</h3>
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.payment_terms.label }}</label>
+                            {{ form.payment_terms }}
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.late_fee_rate.label }}</label>
+                                {{ form.late_fee_rate }}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check mt-4">
+                                    {{ form.recovery_fee }} <label class="form-check-label">{{ form.recovery_fee.label }}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            {{ form.autoliquidation }} <label class="form-check-label">{{ form.autoliquidation.label }}</label>
+                        </div>
+
+                        <!-- Bouton de génération -->
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg btn-generate">
+                                Générer la facture PDF
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Footer -->
+                    <div class="text-center mt-4">
+                        <p class="text-muted">
+                            Made with by EasyInvoice
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

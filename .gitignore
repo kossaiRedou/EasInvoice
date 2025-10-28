@@ -1,0 +1,35 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+staticfiles/
+
+# Environnement virtuel
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Données locales
+data/
+*.pdf
+benchmark/
+benchmark*/
+benchmark/weasyprint-samples/
+benchmark/weasyprint-samples*/
+/benchmark/weasyprint-samples
+# Secrets
+*.env
+.env

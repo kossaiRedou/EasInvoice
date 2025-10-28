@@ -1,0 +1,131 @@
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <link href="invoice.css" media="print" rel="stylesheet">
+    <title>Facture {{ invoice_number }}</title>
+    <meta name="description" content="Facture {{ invoice_number }}">
+    <style>
+      .ei-badge {
+        background: #1ee494;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-size: 0.75em;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+      }
+      .addr-label { color: #a9a; text-transform: uppercase; font-size: 10pt; display: block; margin-bottom: 4px; }
+      #from, #to {
+        line-height: 1.0;
+        margin-bottom: 0.1em;
+      }
+      address {
+        line-height: 1.2;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Facture</h1>
+
+    <aside>
+      <address id="from">
+        <span class="addr-label">Émetteur</span>
+        <strong class="company-name">{{ from_name }}</strong><br>
+        {{ from_address|linebreaks }}
+        {% if from_city %}{{ from_city }}<br>{% endif %}
+        {% if from_email %}<span style="color:#555;"> {{ from_email }}</span><br>{% endif %}
+        {% if siret %}<strong>SIRET:</strong> {{ siret }}<br>{% endif %}
+        {% if rcs %}<strong>RCS:</strong> {{ rcs }}{% endif %}
+        {% if is_ei %}<div class="ei-badge">ENTREPRENEUR INDIVIDUEL</div>{% endif %}
+      </address>
+
+      <address id="to">
+        <span class="addr-label">Destinataire</span>
+        <span class="company-name">{{ to_name }}</span><br>
+        {{ to_address|linebreaks }}
+        {% if to_city %}{{ to_city }}<br>{% endif %}
+        {% if to_email %}<span style="color:#555;"> {{ to_email }}</span>{% endif %}
+      </address>
+    </aside>
+
+    <dl id="informations">
+      <dt>Numéro de facture</dt>
+      <dd>{{ invoice_number }}</dd>
+      <dt>Date d'émission</dt>
+      <dd>{{ invoice_date|date:"d/m/Y" }}</dd>
+      {% if service_date %}
+      <dt>Date de la prestation</dt>
+      <dd>{{ service_date|date:"d/m/Y" }}</dd>
+      {% endif %}
+      <dt>Date d'échéance</dt>
+      <dd>{{ due_date|date:"d/m/Y" }}</dd>
+    </dl>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Quantité</th>
+          <th>Prix unitaire HT</th>
+          <th>Total HT</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.description }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.unit_price }} €</td>
+          <td>{{ item.line_total|floatformat:2 }} €</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <footer>
+      <table id="total">
+        <thead>
+          <tr>
+            <th>Total HT</th>
+            <th>TVA ({% if is_vat_exempt %}0{% else %}{{ vat_rate }}{% endif %}%)</th>
+            <th>Total TTC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ subtotal|floatformat:2 }} €</td>
+            <td>{{ vat_amount|floatformat:2 }} €</td>
+            <td>{{ total|floatformat:2 }} €</td>
+          </tr>
+        </tbody>
+      </table>
+
+      {% if vat_note %}
+      <p style="margin-top: 1em;">{{ vat_note }}</p>
+      {% endif %}
+
+      {% if payment_terms %}
+      <br>
+      <br>
+      <p>Modalités de paiement:</p>
+      <h4>{{ payment_terms }}</h4>
+      {% endif %}
+
+      {% if penalties_note %}
+      <p>{{ penalties_note }}</p>
+      {% endif %}
+
+      {% if recovery_note %}
+      <p>{{ recovery_note }}</p>
+      {% endif %}
+
+      {% if autoliquidation %}
+      <h4>Autoliquidation</h4>
+      {% endif %}
+    </footer>
+
+  </body>
+</html>

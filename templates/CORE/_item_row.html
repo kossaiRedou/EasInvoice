@@ -1,0 +1,26 @@
+<div class="row g-2 align-items-end item-row" id="item-row-{{ index }}">
+  <div class="col-md-6">
+    <label class="form-label">{{ form.description.label }}</label>
+    {{ form.description }}
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">{{ form.quantity.label }}</label>
+    {{ form.quantity }}
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">{{ form.unit_price.label }}</label>
+    {{ form.unit_price }}
+  </div>
+  <div class="col-md-2 text-end">
+    {% if form.DELETE %}
+      <div style="display:none;">{{ form.DELETE }}</div>
+    {% else %}
+      <input type="hidden" name="items-{{ index }}-DELETE" value="">
+    {% endif %}
+    {% if index > 0 %}
+    <button type="button" class="btn btn-outline-danger btn-sm" data-action="remove-item">Supprimer</button>
+    {% else %}
+    <span style="color: #ccc;">Ligne principale</span>
+    {% endif %}
+  </div>
+</div>
