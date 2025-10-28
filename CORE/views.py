@@ -161,3 +161,8 @@ def add_item_row(request):
     row_html = render_to_string('CORE/_item_row.html', {'form': form, 'index': new_index})
     mgmt_html = f'\n<input type="hidden" name="items-TOTAL_FORMS" id="id_items-TOTAL_FORMS" value="{new_index + 1}" hx-swap-oob="true">\n'
     return HttpResponse(row_html + mgmt_html)
+
+
+def privacy_policy(request):
+    """Page de politique de confidentialité"""
+    return render(request, 'CORE/privacy_policy.html')
