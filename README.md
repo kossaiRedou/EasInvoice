@@ -1,8 +1,8 @@
-# 🧾 EasyInvoice — Documentation
+# EasyInvoice — Documentation
 
 EasyInvoice est une application Django permettant de générer des factures PDF professionnelles à partir d’un formulaire simple, sans base de données. L’interface est moderne, les lignes d’articles sont dynamiques (HTMX), et l’architecture est prête pour une future version « premium ».
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
 - Formulaire complet côté émetteur et destinataire (nom/entreprise, adresse, ville, email, EI, SIRET, RCS)
 - Lignes d’articles dynamiques (ajout/suppression) via HTMX et formset Django
@@ -11,7 +11,7 @@ EasyInvoice est une application Django permettant de générer des factures PDF 
 - Rendu imprimable stylé (CSS) + noms en majuscules (affichage)
 - Génération PDF avec WeasyPrint (si installé)
 
-## 📁 Structure du projet
+## Structure du projet
 
 ```
 EasInvoice/
@@ -32,7 +32,7 @@ EasInvoice/
 └── manage.py
 ```
 
-## 🚀 Installation & Lancement
+## Installation & Lancement
 
 1) Créer et activer un venv
 ```bash
@@ -58,7 +58,7 @@ python manage.py runserver
 http://127.0.0.1:8000/
 ```
 
-## 🧠 Utilisation
+## Utilisation
 
 1. Renseignez les infos émetteur/destinataire (ville et email inclus). Cochez « Entrepreneur Individuel » si applicable.
 2. Ajoutez vos articles (+ Ajouter une ligne). Supprimez-en si besoin.
@@ -67,25 +67,25 @@ http://127.0.0.1:8000/
 5. Optionnel: modalités de paiement, pénalités, recouvrement, autoliquidation.
 6. Cliquez « Générer la facture PDF ».
 
-Si WeasyPrint est absent, installez-le pour produire un PDF. Sous Windows, suivez la doc WeasyPrint (GTK runtime).
+Si WeasyPrint est absent, installez-le pour produire un PDF. Sous Windows, suivez la doc [WeasyPrint](https://github.com/Kozea/WeasyPrint/).
 
-## 🧩 Détails techniques
+## Détails techniques
 
 - HTMX + formset: `add-item-row/` renvoie un formulaire vide avec index incrémenté et champ `DELETE` prêt; suppression visuelle coche `DELETE`.
 - Conformité: mentions EI (badge), SIRET/RCS, 293 B CGI, autoliquidation, pénalités et recouvrement.
 - Mise en page: sections « Émetteur » et « Destinataire » compactes; noms en MAJUSCULES avec `.company-name`.
 
-## 🔧 Personnalisation
+## Personnalisation
 
 - Styles: `static/CORE/css/invoice.css`
 - Template facture: `templates/CORE/invoice.html`
 - Ajouter un logo: placer dans `static/CORE/images/` et l’intégrer au template
 
-## 🔮 Évolutions (premium)
+## Évolutions (premium)
 
 - Multi-modèles, logo, remises/acompte, prévisualisation HTML, historique, exports, QR code, paiements
 
-## 🛟 Dépannage
+## Dépannage
 
 - PDF absent: installer WeasyPrint + dépendances système
 - Articles manquants: vérifier que les champs requis sont remplis et que la ligne n’est pas marquée `DELETE`
