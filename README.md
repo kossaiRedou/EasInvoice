@@ -92,4 +92,4 @@ Si WeasyPrint est absent, installez-le pour produire un PDF. Sous Windows, suive
 
 ---
 
-Made with ❤️ by EasyInvoice
+Made by EasyInvoice
