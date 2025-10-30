@@ -13,7 +13,7 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+ALLOWED_HOSTS=["127.0.0.1","aibykalmaya.pythonanywhere.com"]
 
 
 # Application definition
@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'CORE',  # Application principale pour la génération de factures
+    'TICKET',  # Application pour la génération d'étiquettes
 ]
 
 MIDDLEWARE = [

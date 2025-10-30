@@ -1,0 +1,23 @@
+<div class="item-row" data-item-index="{{ index }}">
+    <div class="row align-items-end">
+        <div class="col-md-5 mb-2">
+            <label class="form-label">Description *</label>
+            <input type="text" name="items-{{ index }}-description" class="form-control" placeholder="Description de l'article" required>
+        </div>
+        <div class="col-md-2 mb-2">
+            <label class="form-label">Quantité *</label>
+            <input type="number" name="items-{{ index }}-quantity" class="form-control" min="1" value="1" required>
+        </div>
+        <div class="col-md-3 mb-2">
+            <label class="form-label">Valeur (€) *</label>
+            <input type="number" name="items-{{ index }}-value" class="form-control" step="0.01" placeholder="0.00" required>
+        </div>
+        <div class="col-md-2 mb-2">
+            <input type="checkbox" name="items-{{ index }}-DELETE" style="display:none;">
+            <button type="button" class="btn btn-remove w-100" data-action="remove-item">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    </div>
+</div>
+

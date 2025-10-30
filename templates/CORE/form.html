@@ -222,6 +222,31 @@
 </head>
 <body>
     <div class="container">
+        <!-- Navigation entre modules -->
+        <div class="row justify-content-center mb-3">
+            <div class="col-lg-10 col-xl-9">
+                <nav style="display: flex; gap: 1rem; justify-content: center; background: white; padding: 0.75rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <a href="{% url 'CORE:invoice_form' %}" style="padding: 0.5rem 1.5rem; background: var(--blue-primary); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                        📄 Factures
+                    </a>
+                    <a href="{% url 'TICKET:ticket_form' %}" style="padding: 0.5rem 1.5rem; background: var(--border-color); color: var(--text-primary); text-decoration: none; border-radius: 8px; font-weight: 600;">
+                        📦 Étiquettes
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        {% if prefilled_from_ticket %}
+        <div class="row justify-content-center mb-3">
+            <div class="col-lg-10 col-xl-9">
+                <div class="alert alert-info" style="border-left: 4px solid var(--blue-primary);">
+                    <strong>📦 → 📄 Données récupérées depuis l'étiquette</strong>
+                    <p class="mb-0">Les informations ont été importées depuis l'étiquette <strong>{{ ticket.order_number }}</strong>. Complétez les champs manquants (SIRET, TVA, etc.) et ajustez si nécessaire.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <div class="row justify-content-center">
             <div class="col-lg-10 col-xl-9">
                 <div class="invoice-card">

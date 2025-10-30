@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyTicket - Générateur d'étiquettes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --accent-green: #10b981;
+            --light-bg: #f8fafc;
+            --border-color: #e2e8f0;
+        }
+        body {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #2563eb 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .main-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .header-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-green);
+        }
+        .form-label {
+            font-weight: 500;
+            color: #334155;
+            margin-bottom: 0.5rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+        }
+        .form-check-input:checked {
+            background-color: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+        .btn-primary {
+            background: var(--primary-blue);
+            border: 2px solid var(--accent-green);
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        .btn-success {
+            background: var(--accent-green);
+            border: none;
+            font-weight: 600;
+        }
+        .item-row {
+            background: #f0fdf4;
+            border: 1px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .item-row:focus-within {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        .btn-remove {
+            background: #ef4444;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        .btn-add {
+            background: var(--accent-green);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .alert-success {
+            background: #d1fae5;
+            border: 2px solid var(--accent-green);
+            color: #065f46;
+        }
+        footer {
+            text-align: center;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        .nav-pills {
+            background: rgba(255,255,255,0.1);
+            padding: 0.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+        .nav-pills .nav-link {
+            color: white;
+            font-weight: 500;
+        }
+        .nav-pills .nav-link.active {
+            background: var(--accent-green);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Navigation entre modules -->
+        <ul class="nav nav-pills justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'CORE:invoice_form' %}">
+                    <i class="bi bi-file-earmark-text"></i> Factures
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url 'TICKET:ticket_form' %}">
+                    <i class="bi bi-box-seam"></i> Étiquettes
+                </a>
+            </li>
+        </ul>
+
+        <!-- Header -->
+        <div class="header-card text-center">
+            <h1 class="mb-2" style="color: var(--primary-blue); font-weight: 700;">
+                <i class="bi bi-box-seam" style="color: var(--accent-green);"></i>
+                EasyTicket
+            </h1>
+            <p class="text-muted mb-0">Générateur d'étiquettes d'expédition professionnelles</p>
+        </div>
+
+        <!-- Message de succès -->
+        {% if ticket_generated and last_ticket %}
+        <div class="alert alert-success" role="alert">
+            <h5 class="alert-heading">
+                <i class="bi bi-check-circle-fill"></i> Étiquette générée avec succès !
+            </h5>
+            <p>Votre étiquette <strong>{{ last_ticket.order_number }}</strong> a été téléchargée.</p>
+            <p class="mb-3">Souhaitez-vous générer la facture correspondante ?</p>
+            <hr>
+            <a href="{% url 'CORE:invoice_from_ticket' %}" class="btn btn-primary me-2">
+                <i class="bi bi-file-earmark-text"></i> Générer la facture
+            </a>
+            <a href="{% url 'TICKET:ticket_form' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise"></i> Nouvelle étiquette
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Formulaire -->
+        <form method="post" class="form-card">
+            {% csrf_token %}
+
+            <!-- Section Identification -->
+            <div class="mb-4">
+                <h3 class="section-title">
+                    <i class="bi bi-card-heading"></i> Identification
+                </h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.order_number.label }} *</label>
+                        {{ form.order_number }}
+                        {% if form.order_number.errors %}
+                            <div class="text-danger small">{{ form.order_number.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.shipping_date.label }} *</label>
+                        {{ form.shipping_date }}
+                        {% if form.shipping_date.errors %}
+                            <div class="text-danger small">{{ form.shipping_date.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Expéditeur -->
+            <div class="mb-4">
+                <h3 class="section-title">
+                    <i class="bi bi-person-badge"></i> Expéditeur
+                </h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.sender_name.label }} *</label>
+                        {{ form.sender_name }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.sender_city.label }} *</label>
+                        {{ form.sender_city }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.sender_address.label }} *</label>
+                    {{ form.sender_address }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.sender_email.label }}</label>
+                        {{ form.sender_email }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.sender_phone.label }}</label>
+                        {{ form.sender_phone }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Destinataire -->
+            <div class="mb-4">
+                <h3 class="section-title">
+                    <i class="bi bi-geo-alt"></i> Destinataire
+                </h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.recipient_name.label }} *</label>
+                        {{ form.recipient_name }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.recipient_city.label }} *</label>
+                        {{ form.recipient_city }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.recipient_address.label }} *</label>
+                    {{ form.recipient_address }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.recipient_email.label }}</label>
+                        {{ form.recipient_email }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.recipient_phone.label }}</label>
+                        {{ form.recipient_phone }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.recipient_instructions.label }}</label>
+                    {{ form.recipient_instructions }}
+                </div>
+            </div>
+
+            <!-- Section Colis -->
+            <div class="mb-4">
+                <h3 class="section-title">
+                    <i class="bi bi-box"></i> Informations du colis
+                </h3>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">{{ form.weight.label }} *</label>
+                        {{ form.weight }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">{{ form.length.label }} *</label>
+                        {{ form.length }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">{{ form.width.label }} *</label>
+                        {{ form.width }}
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">{{ form.height.label }} *</label>
+                        {{ form.height }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.carrier.label }} *</label>
+                        {{ form.carrier }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.carrier_other.label }}</label>
+                        {{ form.carrier_other }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.tracking_number.label }}</label>
+                    {{ form.tracking_number }}
+                </div>
+            </div>
+
+            <!-- Section Contenu du colis -->
+            <div class="mb-4">
+                <h3 class="section-title">
+                    <i class="bi bi-list-ul"></i> Contenu du colis
+                </h3>
+                {{ item_formset.management_form }}
+                <div id="items-container">
+                    {% for form in item_formset %}
+                    <div class="item-row" data-item-index="{{ forloop.counter0 }}">
+                        <div class="row align-items-end">
+                            <div class="col-md-5 mb-2">
+                                <label class="form-label">Description *</label>
+                                {{ form.description }}
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                <label class="form-label">Quantité *</label>
+                                {{ form.quantity }}
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label class="form-label">Valeur (€) *</label>
+                                {{ form.value }}
+                            </div>
+                            <div class="col-md-2 mb-2">
+                                {{ form.DELETE }}
+                                {% if forloop.counter0 > 0 %}
+                                <button type="button" class="btn btn-remove w-100" data-action="remove-item">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" class="btn btn-add" 
+                        hx-get="{% url 'TICKET:add_package_item' %}"
+                        hx-target="#items-container"
+                        hx-swap="beforeend"
+                        hx-include="[name='items-TOTAL_FORMS']">
+                    <i class="bi bi-plus-circle"></i> Ajouter un article
+                </button>
+            </div>
+
+            <!-- Section Options -->
+            <div class="mb-4">
+                <h3 class="section-title">
+                    <i class="bi bi-gear"></i> Options supplémentaires
+                </h3>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="form-check">
+                            {{ form.is_fragile }}
+                            <label class="form-check-label">{{ form.is_fragile.label }}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="form-check">
+                            {{ form.is_insured }}
+                            <label class="form-check-label">{{ form.is_insured.label }}</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="form-check">
+                            {{ form.signature_required }}
+                            <label class="form-check-label">{{ form.signature_required.label }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.insurance_amount.label }}</label>
+                        {{ form.insurance_amount }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.cash_on_delivery.label }}</label>
+                        {{ form.cash_on_delivery }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.recipient_message.label }}</label>
+                    {{ form.recipient_message }}
+                </div>
+            </div>
+
+            <!-- Bouton de soumission -->
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-download"></i> Générer l'étiquette PDF
+                </button>
+            </div>
+        </form>
+
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2025 EasyInvoice. Tous droits réservés.</p>
+            <p>
+                <a href="{% url 'CORE:privacy_policy' %}" style="color: white; text-decoration: underline;">
+                    Politique de confidentialité
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Gestion de la suppression d'items
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('[data-action="remove-item"]')) {
+                const itemRow = e.target.closest('.item-row');
+                const deleteCheckbox = itemRow.querySelector('input[name$="-DELETE"]');
+                if (deleteCheckbox) {
+                    deleteCheckbox.checked = true;
+                }
+                itemRow.style.display = 'none';
+            }
+        });
+
+        // Mise à jour automatique de TOTAL_FORMS après ajout HTMX
+        document.body.addEventListener('htmx:afterSwap', function(event) {
+            const totalFormsInput = document.querySelector('input[name="items-TOTAL_FORMS"]');
+            if (totalFormsInput) {
+                const currentTotal = parseInt(totalFormsInput.value);
+                totalFormsInput.value = currentTotal + 1;
+            }
+        });
+
+        // Afficher/masquer le champ "Autre transporteur"
+        const carrierSelect = document.querySelector('select[name="carrier"]');
+        const carrierOtherField = document.querySelector('input[name="carrier_other"]').closest('.col-md-6');
+        
+        function toggleCarrierOther() {
+            if (carrierSelect.value === 'other') {
+                carrierOtherField.style.display = 'block';
+            } else {
+                carrierOtherField.style.display = 'none';
+            }
+        }
+        
+        carrierSelect.addEventListener('change', toggleCarrierOther);
+        toggleCarrierOther();
+    </script>
+</body>
+</html>
+
