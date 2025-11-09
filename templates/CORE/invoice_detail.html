@@ -1,233 +1,189 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facture {{ invoice.invoice_number }} - EasyInvoice</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --blue-primary: #1E90FF;
-            --bg-page: #F3F4F6;
-        }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: var(--bg-page);
-        }
-        .navbar {
-            background: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1rem 0;
-        }
-        .navbar-brand {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            color: var(--blue-primary) !important;
-            font-size: 1.5rem;
-        }
-        .detail-card {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            margin-bottom: 1.5rem;
-        }
-        .section-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-            color: #111827;
-        }
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #E5E7EB;
-        }
-        .info-row:last-child {
-            border-bottom: none;
-        }
-        .info-label {
-            color: #6B7280;
-            font-weight: 500;
-        }
-        .info-value {
-            font-weight: 600;
-            color: #111827;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'CORE:dashboard' %}">EasyInvoice</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:dashboard' %}">Tableau de bord</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:generate_invoice' %}">Nouvelle facture</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:invoice_list' %}">Mes factures</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:client_list' %}">Clients</a></li>
-                    <li class="nav-item"><span class="nav-link text-muted">{{ user.username }}</span></li>
-                    <li class="nav-item"><a class="nav-link text-danger" href="{% url 'CORE:logout' %}">Déconnexion</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+{% extends "dashboard_base.html" %}
 
-    <div class="container mt-5 mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h2">Facture {{ invoice.invoice_number }}</h1>
-            <div>
-                <a href="{% url 'CORE:invoice_download_pdf' invoice.id %}" class="btn btn-success">
-                    Télécharger PDF
-                </a>
-                <a href="{% url 'CORE:invoice_list' %}" class="btn btn-outline-secondary">Retour</a>
+{% block title %}Facture {{ invoice.invoice_number }} - EasyInvoice{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="page-title mb-1">Facture {{ invoice.invoice_number }}</h1>
+        <p class="page-subtitle mb-0">Client: {{ invoice.to_name }}</p>
+    </div>
+    <div>
+        <a href="{% url 'CORE:invoice_download_pdf' invoice.id %}" class="btn btn-success">
+            <i class="fas fa-download me-2"></i>
+            Télécharger PDF
+        </a>
+        <a href="{% url 'CORE:invoice_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>
+            Retour
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Informations générales -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="h5 mb-4" style="font-weight: 600;">
+                    <i class="fas fa-info-circle me-2" style="color: var(--blue-primary);"></i>
+                    Informations générales
+                </h3>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-3" style="background: var(--bg-page); border-radius: 8px;">
+                            <small class="text-muted d-block mb-1">Numéro de facture</small>
+                            <strong>{{ invoice.invoice_number }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3" style="background: var(--bg-page); border-radius: 8px;">
+                            <small class="text-muted d-block mb-1">Date d'émission</small>
+                            <strong>{{ invoice.invoice_date|date:"d/m/Y" }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3" style="background: var(--bg-page); border-radius: 8px;">
+                            <small class="text-muted d-block mb-1">Date d'échéance</small>
+                            <strong>{{ invoice.due_date|date:"d/m/Y" }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3" style="background: var(--bg-page); border-radius: 8px;">
+                            <small class="text-muted d-block mb-1">Statut</small>
+                            <span class="badge {{ invoice.get_status_badge_class }}">{{ invoice.get_status_display }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <div class="row">
-            <div class="col-md-8">
-                <!-- Informations générales -->
-                <div class="detail-card">
-                    <h3 class="section-title">Informations générales</h3>
-                    <div class="info-row">
-                        <span class="info-label">Numéro de facture</span>
-                        <span class="info-value">{{ invoice.invoice_number }}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Date d'émission</span>
-                        <span class="info-value">{{ invoice.invoice_date|date:"d/m/Y" }}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Date d'échéance</span>
-                        <span class="info-value">{{ invoice.due_date|date:"d/m/Y" }}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Statut</span>
-                        <span class="badge {{ invoice.get_status_badge_class }}">{{ invoice.get_status_display }}</span>
-                    </div>
-                </div>
-
-                <!-- Client -->
-                <div class="detail-card">
-                    <h3 class="section-title">Client</h3>
-                    <div class="info-row">
-                        <span class="info-label">Nom</span>
-                        <span class="info-value">{{ invoice.to_name }}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Adresse</span>
-                        <span class="info-value">{{ invoice.to_address|linebreaks }}</span>
-                    </div>
+        <!-- Client -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="h5 mb-4" style="font-weight: 600;">
+                    <i class="fas fa-user me-2" style="color: var(--blue-primary);"></i>
+                    Client
+                </h3>
+                <div class="p-3" style="background: var(--bg-page); border-radius: 8px;">
+                    <div class="mb-2"><strong>{{ invoice.to_name }}</strong></div>
+                    <div class="text-muted" style="white-space: pre-line;">{{ invoice.to_address }}</div>
                     {% if invoice.to_city %}
-                    <div class="info-row">
-                        <span class="info-label">Ville</span>
-                        <span class="info-value">{{ invoice.to_city }}</span>
-                    </div>
+                        <div class="text-muted">{{ invoice.to_city }}</div>
                     {% endif %}
                     {% if invoice.to_email %}
-                    <div class="info-row">
-                        <span class="info-label">Email</span>
-                        <span class="info-value">{{ invoice.to_email }}</span>
-                    </div>
+                        <div class="text-muted mt-2">
+                            <i class="fas fa-envelope me-1"></i>
+                            {{ invoice.to_email }}
+                        </div>
                     {% endif %}
                 </div>
-
-                <!-- Articles -->
-                <div class="detail-card">
-                    <h3 class="section-title">Articles</h3>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Description</th>
-                                    <th class="text-center">Quantité</th>
-                                    <th class="text-end">Prix unitaire</th>
-                                    <th class="text-end">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in invoice.items.all %}
-                                <tr>
-                                    <td>{{ item.description }}</td>
-                                    <td class="text-center">{{ item.quantity }}</td>
-                                    <td class="text-end">{{ item.unit_price|floatformat:2 }} €</td>
-                                    <td class="text-end"><strong>{{ item.line_total|floatformat:2 }} €</strong></td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
             </div>
+        </div>
 
-            <div class="col-md-4">
-                <!-- Montants -->
-                <div class="detail-card">
-                    <h3 class="section-title">Montants</h3>
-                    <div class="info-row">
-                        <span class="info-label">Sous-total HT</span>
-                        <span class="info-value">{{ invoice.subtotal|floatformat:2 }} €</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">TVA ({{ invoice.vat_rate }}%)</span>
-                        <span class="info-value">{{ invoice.vat_amount|floatformat:2 }} €</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Total TTC</span>
-                        <span class="info-value" style="font-size: 1.25rem; color: var(--blue-primary);">
-                            {{ invoice.total|floatformat:2 }} €
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Changer le statut -->
-                <div class="detail-card">
-                    <h3 class="section-title">Changer le statut</h3>
-                    <form method="post" action="{% url 'CORE:invoice_update_status' invoice.id %}">
-                        {% csrf_token %}
-                        <select name="status" class="form-select mb-3">
-                            {% for value, label in invoice.STATUS_CHOICES %}
-                                <option value="{{ value }}" {% if invoice.status == value %}selected{% endif %}>
-                                    {{ label }}
-                                </option>
+        <!-- Articles -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="h5 mb-4" style="font-weight: 600;">
+                    <i class="fas fa-list me-2" style="color: var(--blue-primary);"></i>
+                    Articles
+                </h3>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-center">Quantité</th>
+                                <th class="text-end">Prix unitaire</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in invoice.items.all %}
+                            <tr>
+                                <td>{{ item.description }}</td>
+                                <td class="text-center">{{ item.quantity }}</td>
+                                <td class="text-end">{{ item.unit_price|floatformat:2 }} €</td>
+                                <td class="text-end"><strong>{{ item.line_total|floatformat:2 }} €</strong></td>
+                            </tr>
                             {% endfor %}
-                        </select>
-                        <button type="submit" class="btn btn-primary w-100">Mettre à jour</button>
-                    </form>
-                </div>
-
-                <!-- Actions -->
-                <div class="detail-card">
-                    <h3 class="section-title">Actions</h3>
-                    <a href="{% url 'CORE:invoice_download_pdf' invoice.id %}" class="btn btn-success w-100 mb-2">
-                        Télécharger PDF
-                    </a>
-                    <form method="post" action="{% url 'CORE:invoice_delete' invoice.id %}" 
-                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette facture ?');">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger w-100">Supprimer</button>
-                    </form>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    <div class="col-lg-4">
+        <!-- Montants -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="h5 mb-4" style="font-weight: 600;">
+                    <i class="fas fa-calculator me-2" style="color: var(--green-accent);"></i>
+                    Montants
+                </h3>
+                <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                    <span class="text-muted">Sous-total HT</span>
+                    <strong>{{ invoice.subtotal|floatformat:2 }} €</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                    <span class="text-muted">TVA ({{ invoice.vat_rate }}%)</span>
+                    <strong>{{ invoice.vat_amount|floatformat:2 }} €</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center" style="background: var(--bg-page); padding: 1rem; border-radius: 8px;">
+                    <span style="font-weight: 600; font-size: 1.1rem;">Total TTC</span>
+                    <span style="font-weight: 700; font-size: 1.5rem; color: var(--green-accent);">
+                        {{ invoice.total|floatformat:2 }} €
+                    </span>
+                </div>
+            </div>
+        </div>
 
+        <!-- Changer le statut -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="h5 mb-3" style="font-weight: 600;">
+                    <i class="fas fa-edit me-2" style="color: var(--blue-primary);"></i>
+                    Changer le statut
+                </h3>
+                <form method="post" action="{% url 'CORE:invoice_update_status' invoice.id %}">
+                    {% csrf_token %}
+                    <select name="status" class="form-select mb-3">
+                        {% for value, label in invoice.STATUS_CHOICES %}
+                            <option value="{{ value }}" {% if invoice.status == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-check me-2"></i>
+                        Mettre à jour
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="card">
+            <div class="card-body">
+                <h3 class="h5 mb-3" style="font-weight: 600;">
+                    <i class="fas fa-cog me-2" style="color: var(--blue-primary);"></i>
+                    Actions
+                </h3>
+                <a href="{% url 'CORE:invoice_download_pdf' invoice.id %}" class="btn btn-success w-100 mb-2">
+                    <i class="fas fa-download me-2"></i>
+                    Télécharger PDF
+                </a>
+                <form method="post" action="{% url 'CORE:invoice_delete' invoice.id %}" 
+                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette facture ?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-trash me-2"></i>
+                        Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

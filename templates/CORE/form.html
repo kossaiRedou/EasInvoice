@@ -1,215 +1,300 @@
+{% extends "dashboard_base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyInvoice - Créer une facture</title>
-    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --blue-primary: #1E90FF;
-            --blue-hover: #2563EB;
-            --green-accent: #00B386;
-            --text-primary: #374151;
-            --text-secondary: #6B7280;
-            --bg-page: #F3F4F6;
-            --bg-card: white;
-            --border-color: #E5E7EB;
-        }
-        * { font-family: 'Roboto', sans-serif; }
-        body {
-            background: var(--bg-page);
-            min-height: 100vh;
-            padding: 2rem 1rem;
-            color: var(--text-primary);
-        }
-        .invoice-card {
-            max-width: 900px;
-            margin: 0 auto;
-            background: var(--bg-card);
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            padding: 2.5rem;
-        }
-        .invoice-header {
-            text-align: left;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 1.5rem;
-        }
-        .invoice-header h1 { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 700; color: var(--blue-primary); margin: 0; }
-        .invoice-header h5 { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 700; color: var(--blue-primary); margin: 0; }
-        .invoice-header img { height: 150px; margin-bottom: 1rem; }
-        .invoice-header .subtitle { 
-            font-size: 1.15rem; 
-            color: var(--blue-primary); 
-            font-weight: 600; 
-            margin: 0.75rem 0 0.5rem 0; 
-        }
-        .invoice-header .desc { 
-            font-size: 1rem; 
-            color: var(--text-secondary); 
-            margin: 0; 
-        }
-        .badge-success {
-            background: var(--green-accent);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-left: 0.5rem;
-        }
-        .section-title {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-primary);
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin: 2rem 0 1rem 0;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .section-emetteur { background: #F9FAFB; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; }
-        .section-block { margin-bottom: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
-        .btn-primary { background-color: var(--blue-primary); border-color: var(--blue-primary); }
-        .btn-primary:hover { background-color: var(--blue-hover); border-color: var(--blue-hover); }
-        .btn-generate {
-            background: var(--blue- accent);
-            color: white;
-            border: 2px solid var(--green-accent);
-            padding: 1rem 2.5rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            border-radius: 8px;
-            transition: all 0.2s;
-            width: 100%;
-            cursor: pointer;
-        }
-        .btn-generate:hover { 
-            background:rgb(39, 124, 250); 
-            border-color: #00A078;
-            text-color:  #00A078;
-            box-shadow: 0 6px 10px rgba(0,179,134,0.3); 
-            transform: translateY(-1px); 
-        }
-        .btn-generate:focus { outline: 2px solid rgba(37,99,235,0.4); outline-offset: 2px; }
-        .btn-generate.loading::after {
-            content: ' ⏳';
-        }
-        .form-control:focus { 
-            border-color: var(--blue-primary); 
-            box-shadow: 0 0 0 0.2rem rgba(30,144,255,0.25); 
-        }
-        .form-control.is-valid { 
-            border-color: var(--green-accent); 
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2300B386' d='m2.3 6.73.98-.98-.98-.98-.98.98-.98-.98-.98.98.98.98.98-.98z'/%3e%3c/svg%3e");
-        }
-        .form-control.is-invalid { border-color: #EF4444; }
-        .alert-warning { background: #FEF3C7; border: 1px solid #FCD34D; border-radius: 8px; color: #92400E; }
-        .form-hint { font-size: 0.875rem; color: var(--text-secondary); margin-top: 0.25rem; }
-        .form-label { color: var(--text-primary); font-weight: 600; }
-        footer { text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.875rem; color: #9CA3AF; }
-        .item-row { 
-            margin-bottom: 0.75rem; 
-            padding: 0.75rem; 
-            background: #F9FAFB; 
-            border-radius: 6px; 
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
-        }
-        .item-row:hover { 
-            background: #fff; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
-        }
-        .item-row:hover .btn-outline-danger { opacity: 1; }
-        .btn-outline-danger { opacity: 0.7; transition: opacity 0.2s; }
-        .btn-outline-primary {
-            border-color: var(--green-accent);
-            color: var(--green-accent);
-        }
-        .btn-outline-primary:hover {
-            background-color: var(--green-accent);
-            border-color: var(--green-accent);
-            color: white;
-        }
-        .section-emetteur { 
-            background: linear-gradient(135deg, #EFF6FF 0%, #F9FAFB 100%); 
-            padding: 1.5rem; 
-            border-radius: 8px; 
-            margin-bottom: 1.5rem; 
-            border-left: 4px solid var(--blue-primary);
-        }
-        .section-block { 
-            border-left: 3px solid var(--blue-primary);
-            padding-left: 1rem;
-        }
-        .form-check-input:checked {
-            background-color: var(--green-accent);
-            border-color: var(--green-accent);
-        }
-        .ei-badge-item {
-            background: var(--green-accent);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-left: 0.5rem;
-        }
-        .section-title { 
-            position: relative; 
-            padding-left: 12px; 
-        }
-        .section-title::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--blue-primary);
-            border-radius: 2px;
-        }
-        .item-row .form-control:focus {
-            border-color: var(--green-accent);
-            box-shadow: 0 0 0 0.2rem rgba(0,179,134,0.15);
-        }
-        .btn-outline-danger {
-            border-color: var(--green-accent);
-            color: var(--green-accent);
-        }
-        .btn-outline-danger:hover {
-            background-color: #EF4444;
-            border-color: #EF4444;
-            color: white;
-        }
-        /* Mobile first - base styles */
-        .invoice-card { padding: 1.5rem; }
-        .invoice-header h1 { font-size: 1.5rem; }
-        .section-title { font-size: 1rem; }
-        .invoice-header img { height: 80px; }
+
+{% block title %}Créer une facture - EasyInvoice{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+<style>
+    .section-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border-color);
+    }
+    
+    .section-card-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .section-card-title i {
+        color: var(--blue-primary);
+    }
+    
+    .item-row {
+        background: var(--bg-page);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+        border: 1px solid var(--border-color);
+        transition: all 0.2s;
+    }
+    
+    .item-row:hover {
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--blue-primary);
+        box-shadow: 0 0 0 0.2rem rgba(30,144,255,0.15);
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-add-item {
+        border: 2px dashed var(--border-color);
+        background: transparent;
+        color: var(--blue-primary);
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    
+    .btn-add-item:hover {
+        border-color: var(--blue-primary);
+        background: rgba(30,144,255,0.05);
+    }
+    
+    .badge-success {
+        background: var(--green-accent);
+        padding: 0.375rem 0.75rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1 class="page-title">Créer une facture</h1>
+    <p class="page-subtitle">Remplissez les informations pour générer votre facture PDF</p>
+</div>
+
+{% if not weasyprint_available %}
+<div class="alert alert-warning mb-4" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    <strong>Attention:</strong> WeasyPrint n'est pas installé. Installez-le avec: <code>pip install WeasyPrint</code>
+</div>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger mb-4">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Informations de l'émetteur -->
+            <div class="section-card">
+                <h3 class="section-card-title">
+                    <i class="fas fa-building"></i>
+                    Vos informations
+                </h3>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.from_name.label }}</label>
+                        {{ form.from_name }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.invoice_number.label }}</label>
+                        {{ form.invoice_number }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.from_address.label }}</label>
+                    {{ form.from_address }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.from_city.label }}</label>
+                        {{ form.from_city }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.from_email.label }}</label>
+                        {{ form.from_email }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.siret.label }}</label>
+                        {{ form.siret }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.rcs.label }}</label>
+                        {{ form.rcs }}
+                    </div>
+                </div>
+                <div class="form-check">
+                    {{ form.is_ei }}
+                    <label class="form-check-label">{{ form.is_ei.label }}</label>
+                </div>
+            </div>
+            
+            <!-- Informations du client -->
+            <div class="section-card">
+                <h3 class="section-card-title">
+                    <i class="fas fa-user"></i>
+                    Informations client
+                </h3>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.to_name.label }}</label>
+                    {{ form.to_name }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.to_address.label }}</label>
+                    {{ form.to_address }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.to_city.label }}</label>
+                        {{ form.to_city }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.to_email.label }}</label>
+                        {{ form.to_email }}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lignes de facture -->
+            <div class="section-card">
+                <h3 class="section-card-title">
+                    <i class="fas fa-list"></i>
+                    Lignes de facture
+                </h3>
+                {% if items_formset.non_form_errors %}
+                <div class="alert alert-danger">{{ items_formset.non_form_errors }}</div>
+                {% endif %}
+                
+                <div id="items-container">
+                    <input type="hidden" name="items-TOTAL_FORMS" id="id_items-TOTAL_FORMS" value="{{ items_formset.total_form_count }}">
+                    <input type="hidden" name="items-INITIAL_FORMS" value="0">
+                    <input type="hidden" name="items-MIN_NUM_FORMS" value="0">
+                    <input type="hidden" name="items-MAX_NUM_FORMS" value="1000">
+
+                    {% for form_item in items_formset.forms %}
+                        {% if form_item.errors %}
+                        <div class="alert alert-danger">{{ form_item.errors }}</div>
+                        {% endif %}
+                        {% include 'CORE/_item_row.html' with form=form_item index=forloop.counter0 %}
+                    {% endfor %}
+                </div>
+                
+                <button type="button"
+                        class="btn btn-add-item w-100"
+                        hx-post="{% url 'CORE:add_item_row' %}"
+                        hx-include="#id_items-TOTAL_FORMS"
+                        hx-target="#items-container"
+                        hx-swap="beforeend">
+                    <i class="fas fa-plus-circle me-2"></i>
+                    Ajouter une ligne
+                </button>
+            </div>
+            
+            <!-- Conditions de paiement -->
+            <div class="section-card">
+                <h3 class="section-card-title">
+                    <i class="fas fa-money-check-alt"></i>
+                    Conditions de paiement
+                </h3>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.payment_terms.label }}</label>
+                    {{ form.payment_terms }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ form.late_fee_rate.label }}</label>
+                        {{ form.late_fee_rate }}
+                    </div>
+                    <div class="col-md-6 mb-3 d-flex align-items-end">
+                        <div class="form-check">
+                            {{ form.recovery_fee }}
+                            <label class="form-check-label">{{ form.recovery_fee.label }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-check">
+                    {{ form.autoliquidation }}
+                    <label class="form-check-label">{{ form.autoliquidation.label }}</label>
+                </div>
+            </div>
+        </div>
         
-        /* Tablet and up */
-        @media (min-width: 768px) { 
-            .invoice-card { padding: 2.5rem; }
-            .invoice-header h1 { font-size: 2rem; }
-            .section-title { font-size: 1.1rem; }
-            .invoice-header img { height: 100px; }
-        }
-        
-        /* Desktop */
-        @media (min-width: 992px) { 
-            .invoice-header img { height: 150px; }
-        }
-    </style>
-    <script>
-      document.addEventListener('click', function(e) {
+        <div class="col-lg-4">
+            <!-- Dates -->
+            <div class="section-card">
+                <h3 class="section-card-title">
+                    <i class="fas fa-calendar"></i>
+                    Dates
+                </h3>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.invoice_date.label }}</label>
+                    {{ form.invoice_date }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.service_date_start.label }}</label>
+                    {{ form.service_date_start }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.service_date_end.label }}</label>
+                    {{ form.service_date_end }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.due_date.label }}</label>
+                    {{ form.due_date }}
+                </div>
+            </div>
+            
+            <!-- TVA -->
+            <div class="section-card">
+                <h3 class="section-card-title">
+                    <i class="fas fa-percentage"></i>
+                    TVA
+                </h3>
+                <div class="mb-3">
+                    <div class="form-check">
+                        {{ form.is_vat_exempt }}
+                        <label class="form-check-label">{{ form.is_vat_exempt.label }}</label>
+                    </div>
+                    <small class="text-muted">Si coché, la TVA ne s'applique pas</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ form.vat_rate.label }}</label>
+                    {{ form.vat_rate }}
+                    <small class="text-muted d-block mt-1">Ignoré si franchise de TVA</small>
+                </div>
+            </div>
+            
+            <!-- Bouton de génération -->
+            <button type="submit" class="btn btn-success btn-lg w-100">
+                <i class="fas fa-file-pdf me-2"></i>
+                Générer la facture PDF
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+    document.addEventListener('click', function(e) {
         const btn = e.target.closest('[data-action="remove-item"]');
         if (!btn) return;
         const row = btn.closest('.item-row');
@@ -217,240 +302,6 @@
         const cb = row.querySelector('input[type="checkbox"]');
         if (cb) cb.checked = true;
         row.style.display = 'none';
-      });
-    </script>
-</head>
-<body>
-    {% if user.is_authenticated %}
-    <!-- Navbar pour utilisateurs connectés -->
-    <nav class="navbar navbar-expand-lg navbar-light" style="background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 1rem 0; margin-bottom: 2rem;">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'CORE:dashboard' %}" style="font-family: 'Poppins', sans-serif; font-weight: 700; color: var(--blue-primary); font-size: 1.5rem;">EasyInvoice</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:dashboard' %}">Tableau de bord</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="{% url 'CORE:generate_invoice' %}">Nouvelle facture</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:invoice_list' %}">Mes factures</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:client_list' %}">Clients</a></li>
-                    <li class="nav-item"><span class="nav-link text-muted">{{ user.username }}</span></li>
-                    <li class="nav-item"><a class="nav-link text-danger" href="{% url 'CORE:logout' %}">Déconnexion</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    {% endif %}
-    
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10 col-xl-9">
-                <div class="invoice-card">
-                    <!-- Header -->
-                    <div class="invoice-header text-center">
-                        <img src="{% static 'CORE/img/easyLogo.png' %}" alt="EasyInvoice">
-                        <h1>Créer une facture PDF professionnelle <span class="badge-success">Gratuit</span></h1>
-                        <p class="desc">Remplissez le formulaire ci-dessous et téléchargez votre facture instantanément.</p>
-                    </div>
-
-                    {% if not weasyprint_available %}
-                    <div class="alert alert-warning" role="alert">
-                        <strong>Attention:</strong> WeasyPrint n'est pas installé. Installez-le avec: <code>pip install WeasyPrint</code>
-                    </div>
-                    {% endif %}
-
-                    <!-- Formulaire -->
-                    <form method="post">
-                        {% csrf_token %}
-
-                        {% if form.non_field_errors %}
-                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
-                        {% endif %}
-
-                         <!-- Informations de l'émetteur -->
-                         <div class="section-emetteur">
-                             <h3 class="section-title mb-3">Vos informations</h3>
-                             <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.from_name.label }}</label>
-                                {{ form.from_name }}
-                                <div class="form-check mt-2">
-                                    {{ form.is_ei }} <label class="form-check-label">{{ form.is_ei.label }}</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.invoice_number.label }}</label>
-                                {{ form.invoice_number }}
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">{{ form.from_address.label }}</label>
-                            {{ form.from_address }}
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.from_city.label }}</label>
-                                {{ form.from_city }}
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.from_email.label }}</label>
-                                {{ form.from_email }}
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.siret.label }}</label>
-                                {{ form.siret }}
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.rcs.label }}</label>
-                                {{ form.rcs }}
-                             </div>
-                         </div>
-                         </div>
-
-                         <!-- Informations du client -->
-                         <div class="section-block">
-                             <h3 class="section-title">Informations client</h3>
-                        <div class="mb-3">
-                            <label class="form-label">{{ form.to_name.label }}</label>
-                            {{ form.to_name }}
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">{{ form.to_address.label }}</label>
-                            {{ form.to_address }}
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.to_city.label }}</label>
-                                {{ form.to_city }}
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.to_email.label }}</label>
-                                {{ form.to_email }}
-                             </div>
-                         </div>
-                         </div>
-
-                         <!-- Dates -->
-                         <div class="section-block">
-                             <h3 class="section-title">Dates</h3>
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <label class="form-label">{{ form.invoice_date.label }}</label>
-                                {{ form.invoice_date }}
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">{{ form.service_date_start.label }}</label>
-                                {{ form.service_date_start }}
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">{{ form.service_date_end.label }}</label>
-                                {{ form.service_date_end }}
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.due_date.label }}</label>
-                                {{ form.due_date }}
-                            </div>
-                        </div>
-                        </div>
-
-                         <!-- Articles -->
-                         <div class="section-block">
-                             <h3 class="section-title">Lignes de facture</h3>
-                        {% if items_formset.non_form_errors %}
-                        <div class="alert alert-danger">{{ items_formset.non_form_errors }}</div>
-                        {% endif %}
-                        <div id="items-container">
-                            <input type="hidden" name="items-TOTAL_FORMS" id="id_items-TOTAL_FORMS" value="{{ items_formset.total_form_count }}">
-                            <input type="hidden" name="items-INITIAL_FORMS" value="0">
-                            <input type="hidden" name="items-MIN_NUM_FORMS" value="0">
-                            <input type="hidden" name="items-MAX_NUM_FORMS" value="1000">
-
-                            {% for form_item in items_formset.forms %}
-                                {% if form_item.errors %}
-                                <div class="alert alert-danger">{{ form_item.errors }}</div>
-                                {% endif %}
-                                {% include 'CORE/_item_row.html' with form=form_item index=forloop.counter0 %}
-                            {% endfor %}
-                        </div>
-                        <div class="mb-3">
-                            <button type="button"
-                                    class="btn btn-outline-primary"
-                                    hx-post="{% url 'CORE:add_item_row' %}"
-                                    hx-include="#id_items-TOTAL_FORMS"
-                                    hx-target="#items-container"
-                                    hx-swap="beforeend">
-                                + Ajouter une ligne
-                             </button>
-                         </div>
-                         </div>
-
-                         <!-- TVA -->
-                         <div class="section-block">
-                             <h3 class="section-title">TVA</h3>
-                        <div class="row mb-3">
-                            <div class="col-md-3">
-                                <div class="form-check mt-4">
-                                    {{ form.is_vat_exempt }} <label class="form-check-label">{{ form.is_vat_exempt.label }}</label>
-                                </div>
-                                <div class="form-hint">Si coché, la TVA ne s'applique pas.</div>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">{{ form.vat_rate.label }}</label>
-                                {{ form.vat_rate }}
-                                <div class="form-hint">Ignoré si franchise de TVA.</div>
-                             </div>
-                         </div>
-                         </div>
-
-                         <!-- Conditions de paiement -->
-                         <div class="section-block">
-                             <h3 class="section-title">Conditions de paiement</h3>
-                        <div class="mb-3">
-                            <label class="form-label">{{ form.payment_terms.label }}</label>
-                            {{ form.payment_terms }}
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">{{ form.late_fee_rate.label }}</label>
-                                {{ form.late_fee_rate }}
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-check mt-4">
-                                    {{ form.recovery_fee }} <label class="form-check-label">{{ form.recovery_fee.label }}</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-check mb-3">
-                            {{ form.autoliquidation }} <label class="form-check-label">{{ form.autoliquidation.label }}</label>
-                        </div>
-                         </div>
-
-                         <!-- Bouton de génération -->
-                        <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg btn-generate" >
-                                Générer la facture PDF
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Footer -->
-                    <footer>EasyInvoice © 2025 — Outil gratuit pour freelances et auto-entrepreneurs.
-                        <p>aliou@gabithex.fr</p>
-                        <p>contact@easyinvoice.fr</p>
-                        <p>59 rue de ponthieu, 75008 Paris</p>
-                        <a href="{% url 'CORE:privacy_policy' %}">politique de confidentialité</a>
-                    </footer>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+    
+    .auth-container {
+        width: 100%;
+        max-width: 500px;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    
+    .auth-logo {
+        height: 80px;
+        display: block;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .auth-title {
+        font-family: 'Poppins', sans-serif;
+        color: var(--blue-primary);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        font-weight: 700;
+    }
+    
+    .form-control:focus {
+        border-color: var(--blue-primary);
+        box-shadow: 0 0 0 0.2rem rgba(30,144,255,0.25);
+    }
+    
+    .btn-primary {
+        width: 100%;
+        padding: 0.875rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+    
+    .auth-divider {
+        margin: 2rem 0;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .auth-link {
+        text-align: center;
+        color: var(--text-secondary);
+        margin-top: 1rem;
+    }
+    
+    .auth-link a {
+        color: var(--blue-primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .auth-link a:hover {
+        text-decoration: underline;
+    }
+    
+    .helptext {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        display: block;
+        margin-top: 0.25rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+    <div class="auth-card">
+        <img src="{% static 'CORE/img/easyLogo.png' %}" alt="EasyInvoice" class="auth-logo">
+        <h1 class="auth-title">{% block auth_title %}{% endblock %}</h1>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block auth_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+
