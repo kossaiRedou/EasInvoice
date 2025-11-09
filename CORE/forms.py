@@ -247,3 +247,55 @@ class ItemForm(forms.Form):
     unit_price = forms.DecimalField(
         label='PU HT', max_digits=10, decimal_places=2, required=True,
         widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}))
+
+
+class ClientForm(forms.Form):
+    """Formulaire pour créer/éditer un client"""
+    name = forms.CharField(
+        label='Nom/Entreprise',
+        max_length=200,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du client'})
+    )
+    address = forms.CharField(
+        label='Adresse',
+        required=True,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Adresse complète'})
+    )
+    city = forms.CharField(
+        label='Ville',
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ville'})
+    )
+    email = forms.EmailField(
+        label='Email',
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'email@exemple.com'})
+    )
+    phone = forms.CharField(
+        label='Téléphone',
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+33 6 12 34 56 78'})
+    )
+    notes = forms.CharField(
+        label='Notes',
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Notes internes...'})
+    )
+    
+    def save(self, commit=True):
+        """Méthode pour créer un objet Client à partir du formulaire"""
+        from .models import Client
+        client = Client(
+            name=self.cleaned_data['name'],
+            address=self.cleaned_data['address'],
+            city=self.cleaned_data.get('city', ''),
+            email=self.cleaned_data.get('email', ''),
+            phone=self.cleaned_data.get('phone', ''),
+            notes=self.cleaned_data.get('notes', ''),
+        )
+        if commit:
+            client.save()
+        return client

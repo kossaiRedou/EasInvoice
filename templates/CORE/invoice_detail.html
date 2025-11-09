@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture {{ invoice.invoice_number }} - EasyInvoice</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue-primary: #1E90FF;
+            --bg-page: #F3F4F6;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-page);
+        }
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: var(--blue-primary) !important;
+            font-size: 1.5rem;
+        }
+        .detail-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+        .section-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            color: #6B7280;
+            font-weight: 500;
+        }
+        .info-value {
+            font-weight: 600;
+            color: #111827;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'CORE:dashboard' %}">EasyInvoice</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:dashboard' %}">Tableau de bord</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:generate_invoice' %}">Nouvelle facture</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:invoice_list' %}">Mes factures</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'CORE:client_list' %}">Clients</a></li>
+                    <li class="nav-item"><span class="nav-link text-muted">{{ user.username }}</span></li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="{% url 'CORE:logout' %}">Déconnexion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h2">Facture {{ invoice.invoice_number }}</h1>
+            <div>
+                <a href="{% url 'CORE:invoice_download_pdf' invoice.id %}" class="btn btn-success">
+                    Télécharger PDF
+                </a>
+                <a href="{% url 'CORE:invoice_list' %}" class="btn btn-outline-secondary">Retour</a>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Informations générales -->
+                <div class="detail-card">
+                    <h3 class="section-title">Informations générales</h3>
+                    <div class="info-row">
+                        <span class="info-label">Numéro de facture</span>
+                        <span class="info-value">{{ invoice.invoice_number }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Date d'émission</span>
+                        <span class="info-value">{{ invoice.invoice_date|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Date d'échéance</span>
+                        <span class="info-value">{{ invoice.due_date|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Statut</span>
+                        <span class="badge {{ invoice.get_status_badge_class }}">{{ invoice.get_status_display }}</span>
+                    </div>
+                </div>
+
+                <!-- Client -->
+                <div class="detail-card">
+                    <h3 class="section-title">Client</h3>
+                    <div class="info-row">
+                        <span class="info-label">Nom</span>
+                        <span class="info-value">{{ invoice.to_name }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Adresse</span>
+                        <span class="info-value">{{ invoice.to_address|linebreaks }}</span>
+                    </div>
+                    {% if invoice.to_city %}
+                    <div class="info-row">
+                        <span class="info-label">Ville</span>
+                        <span class="info-value">{{ invoice.to_city }}</span>
+                    </div>
+                    {% endif %}
+                    {% if invoice.to_email %}
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value">{{ invoice.to_email }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Articles -->
+                <div class="detail-card">
+                    <h3 class="section-title">Articles</h3>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="text-center">Quantité</th>
+                                    <th class="text-end">Prix unitaire</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in invoice.items.all %}
+                                <tr>
+                                    <td>{{ item.description }}</td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td class="text-end">{{ item.unit_price|floatformat:2 }} €</td>
+                                    <td class="text-end"><strong>{{ item.line_total|floatformat:2 }} €</strong></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <!-- Montants -->
+                <div class="detail-card">
+                    <h3 class="section-title">Montants</h3>
+                    <div class="info-row">
+                        <span class="info-label">Sous-total HT</span>
+                        <span class="info-value">{{ invoice.subtotal|floatformat:2 }} €</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">TVA ({{ invoice.vat_rate }}%)</span>
+                        <span class="info-value">{{ invoice.vat_amount|floatformat:2 }} €</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Total TTC</span>
+                        <span class="info-value" style="font-size: 1.25rem; color: var(--blue-primary);">
+                            {{ invoice.total|floatformat:2 }} €
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Changer le statut -->
+                <div class="detail-card">
+                    <h3 class="section-title">Changer le statut</h3>
+                    <form method="post" action="{% url 'CORE:invoice_update_status' invoice.id %}">
+                        {% csrf_token %}
+                        <select name="status" class="form-select mb-3">
+                            {% for value, label in invoice.STATUS_CHOICES %}
+                                <option value="{{ value }}" {% if invoice.status == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary w-100">Mettre à jour</button>
+                    </form>
+                </div>
+
+                <!-- Actions -->
+                <div class="detail-card">
+                    <h3 class="section-title">Actions</h3>
+                    <a href="{% url 'CORE:invoice_download_pdf' invoice.id %}" class="btn btn-success w-100 mb-2">
+                        Télécharger PDF
+                    </a>
+                    <form method="post" action="{% url 'CORE:invoice_delete' invoice.id %}" 
+                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette facture ?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger w-100">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
