@@ -249,6 +249,55 @@ class ItemForm(forms.Form):
         widget=forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}))
 
 
+class UserProfileForm(forms.Form):
+    """Formulaire pour éditer le profil utilisateur"""
+    company_name = forms.CharField(
+        label="Nom de l'entreprise",
+        max_length=200,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom de votre entreprise'})
+    )
+    address = forms.CharField(
+        label='Adresse',
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Adresse complète'})
+    )
+    city = forms.CharField(
+        label='Ville',
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ville'})
+    )
+    email = forms.EmailField(
+        label='Email',
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'email@exemple.com'})
+    )
+    phone = forms.CharField(
+        label='Téléphone',
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+33 6 12 34 56 78'})
+    )
+    siret = forms.CharField(
+        label='SIRET',
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 123 456 789 00012'})
+    )
+    rcs = forms.CharField(
+        label='RCS / Immatriculation',
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ex: RCS Paris 123 456 789'})
+    )
+    is_ei = forms.BooleanField(
+        label='Entrepreneur Individuel (EI)',
+        required=False,
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
+    )
+
+
 class ClientForm(forms.Form):
     """Formulaire pour créer/éditer un client"""
     name = forms.CharField(

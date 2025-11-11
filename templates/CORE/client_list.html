@@ -2,6 +2,42 @@
 
 {% block title %}Mes clients - EasyInvoice{% endblock %}
 
+{% block extra_css %}
+{{ block.super }}
+<style>
+    /* Mobile optimization pour client list */
+    @media (max-width: 768px) {
+        /* Button full width sur mobile */
+        .mb-4 .btn {
+            width: 100%;
+        }
+        
+        /* Table plus compacte */
+        .table {
+            font-size: 0.8rem;
+        }
+        
+        .table th, .table td {
+            padding: 0.5rem 0.25rem;
+        }
+        
+        /* Masquer colonnes moins importantes sur mobile */
+        @media (max-width: 576px) {
+            .table th:nth-child(2),
+            .table td:nth-child(2),
+            .table th:nth-child(3),
+            .table td:nth-child(3),
+            .table th:nth-child(4),
+            .table td:nth-child(4),
+            .table th:nth-child(5),
+            .table td:nth-child(5) {
+                display: none;
+            }
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <h1 class="page-title">Mes clients</h1>

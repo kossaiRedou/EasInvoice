@@ -25,7 +25,7 @@
     }
     
     .auth-logo {
-        height: 80px;
+        height: 150px;
         display: block;
         margin: 0 auto 1.5rem;
     }
@@ -90,8 +90,8 @@
 {% block body %}
 <div class="auth-container">
     <div class="auth-card">
-        <img src="{% static 'CORE/img/easyLogo.png' %}" alt="EasyInvoice" class="auth-logo">
-        <h1 class="auth-title">{% block auth_title %}{% endblock %}</h1>
+        <img class="img-fluid" src="{% static 'CORE/img/logoauth.png' %}" alt="EasyInvoice" class="auth-logo">
+        <h3 class="auth-title">{% block auth_title %}{% endblock %}</h3>
         
         {% if messages %}
             {% for message in messages %}

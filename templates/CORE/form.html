@@ -10,7 +10,7 @@
     .section-card {
         background: white;
         border-radius: 12px;
-        padding: 2rem;
+        padding: 1.5rem;
         margin-bottom: 1.5rem;
         border: 1px solid var(--border-color);
     }
@@ -52,6 +52,7 @@
         font-weight: 600;
         color: var(--text-primary);
         margin-bottom: 0.5rem;
+        font-size: 0.95rem;
     }
     
     .btn-add-item {
@@ -60,9 +61,10 @@
         color: var(--blue-primary);
         font-weight: 600;
         transition: all 0.2s;
+        min-height: 50px;
     }
     
-    .btn-add-item:hover {
+    .btn-add-item:hover, .btn-add-item:active {
         border-color: var(--blue-primary);
         background: rgba(30,144,255,0.05);
     }
@@ -71,6 +73,59 @@
         background: var(--green-accent);
         padding: 0.375rem 0.75rem;
         font-weight: 600;
+    }
+    
+    /* Mobile optimization pour le formulaire */
+    @media (max-width: 768px) {
+        .section-card {
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .section-card-title {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            font-size: 0.9rem;
+        }
+        
+        /* Champs de date empilés sur mobile */
+        .row .col-md-6,
+        .row .col-md-4,
+        .row .col-md-3 {
+            margin-bottom: 1rem;
+        }
+        
+        /* Sticky button sur mobile */
+        .sticky-mobile-btn {
+            position: sticky;
+            bottom: 1rem;
+            z-index: 100;
+            margin-top: 2rem;
+        }
+        
+        .sticky-mobile-btn .btn {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Item rows plus compactes */
+        .item-row {
+            padding: 0.75rem;
+        }
+        
+        /* Textarea plus petit sur mobile */
+        textarea.form-control {
+            min-height: 80px;
+        }
+    }
+    
+    /* Desktop: plus d'espace */
+    @media (min-width: 769px) {
+        .section-card {
+            padding: 2rem;
+        }
     }
 </style>
 {% endblock %}
@@ -282,10 +337,15 @@
             </div>
             
             <!-- Bouton de génération -->
-            <button type="submit" class="btn btn-success btn-lg w-100">
-                <i class="fas fa-file-pdf me-2"></i>
-                Générer la facture PDF
-            </button>
+            <div class="sticky-mobile-btn">
+                <button type="submit" class="btn btn-success btn-lg w-100">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Créer la facture
+                </button>
+                <small class="text-muted d-block mt-2 text-center">
+                    Vous pourrez télécharger le PDF après la création
+                </small>
+            </div>
         </div>
     </div>
 </form>

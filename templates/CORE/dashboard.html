@@ -2,6 +2,73 @@
 
 {% block title %}Tableau de bord - EasyInvoice{% endblock %}
 
+{% block extra_css %}
+{{ block.super }}
+<style>
+    /* Mobile optimization pour dashboard */
+    @media (max-width: 768px) {
+        /* Stats cards: 2 colonnes sur mobile */
+        .row.g-4 .col-md-3 {
+            width: 50%;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        
+        .row.g-4 .col-md-6 {
+            width: 100%;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+        }
+        
+        /* Cards plus compactes sur mobile */
+        .card {
+            margin-bottom: 1rem;
+        }
+        
+        .card-body {
+            padding: 1rem;
+        }
+        
+        .card-body h2 {
+            font-size: 1.75rem;
+        }
+        
+        .card-body h6 {
+            font-size: 0.8rem;
+        }
+        
+        /* Button actions full width */
+        .mb-4 .btn-lg {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        /* Table responsive sur mobile */
+        .table {
+            font-size: 0.8rem;
+        }
+        
+        .table th, .table td {
+            padding: 0.5rem 0.25rem;
+        }
+        
+        /* Masquer certaines colonnes sur mobile */
+        @media (max-width: 576px) {
+            .table th:nth-child(3),
+            .table td:nth-child(3),
+            .table th:nth-child(6),
+            .table td:nth-child(6) {
+                display: none;
+            }
+            
+            .row.g-4 .col-md-3 {
+                width: 100%;
+            }
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <h1 class="page-title">Tableau de bord</h1>
@@ -120,7 +187,9 @@
                     <tbody>
                         {% for invoice in invoices %}
                             <tr>
-                                <td><strong>{{ invoice.invoice_number }}</strong></td>
+                                <td><a href="{% url 'CORE:invoice_detail' invoice.id %}" class="btn btn-sm btn-outline-primary">
+                                    <strong>{{ invoice.invoice_number }}
+                                </a></strong></td>
                                 <td>{{ invoice.to_name }}</td>
                                 <td>{{ invoice.invoice_date|date:"d/m/Y" }}</td>
                                 <td class="text-end"><strong>{{ invoice.total|floatformat:2 }} €</strong></td>

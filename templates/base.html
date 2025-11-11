@@ -34,6 +34,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
@@ -41,10 +42,19 @@
             background: var(--bg-page);
             color: var(--text-primary);
             min-height: 100vh;
+            font-size: 16px; /* Base size pour mobile */
         }
         
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Poppins', sans-serif;
+        }
+        
+        /* Boutons optimisés pour mobile */
+        .btn {
+            min-height: 44px; /* Recommandation Apple pour touch targets */
+            font-size: 1rem;
+            padding: 0.75rem 1.25rem;
+            touch-action: manipulation;
         }
         
         .btn-primary {
@@ -54,7 +64,7 @@
             transition: all 0.2s;
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover, .btn-primary:active {
             background: var(--blue-hover);
             transform: translateY(-1px);
             box-shadow: 0 4px 8px rgba(30, 144, 255, 0.3);
@@ -66,8 +76,15 @@
             font-weight: 500;
         }
         
-        .btn-success:hover {
+        .btn-success:hover, .btn-success:active {
             background: #00A078;
+        }
+        
+        /* Inputs optimisés pour mobile */
+        .form-control, .form-select {
+            min-height: 44px;
+            font-size: 16px; /* Empêche le zoom automatique sur iOS */
+            padding: 0.75rem;
         }
         
         /* Messages Flash */
@@ -75,6 +92,42 @@
             border-radius: 8px;
             border: none;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        /* Tables responsive */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Cards responsive */
+        .card {
+            margin-bottom: 1rem;
+        }
+        
+        /* Espacement pour mobile */
+        @media (max-width: 768px) {
+            body {
+                font-size: 15px;
+            }
+            
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .btn-lg {
+                font-size: 1.1rem;
+                padding: 1rem 1.5rem;
+            }
         }
     </style>
     

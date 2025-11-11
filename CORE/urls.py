@@ -30,6 +30,9 @@ urlpatterns = [
     path('clients/', views.client_list, name='client_list'),
     path('clients/new/', views.client_create, name='client_create'),
     
+    # Profil utilisateur
+    path('profile/edit/', views.profile_edit, name='profile_edit'),
+    
     # Autres
     path('privacy-policy/', views.privacy_policy, name='privacy_policy'),
 ]

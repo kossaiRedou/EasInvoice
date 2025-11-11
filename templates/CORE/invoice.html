@@ -26,13 +26,13 @@
     <aside>
       <address id="from">
         <span class="addr-label">Émetteur</span>
-        <strong class="company-name">{{ from_name }}</strong><br>
+        <strong class="company-name">{{ from_name }}</strong>{% if is_ei %}<div class="ei-badge">EI</div>{% endif %}<br>
         {{ from_address|linebreaks }}
         {% if from_city %}{{ from_city }}<br>{% endif %}
         {% if from_email %}<span style="color:#555;"> {{ from_email }}</span><br>{% endif %}
         {% if siret %}<strong>SIRET:</strong> {{ siret }}<br>{% endif %}
         {% if rcs %}<strong>RCS:</strong> {{ rcs }}{% endif %}
-        {% if is_ei %}<div class="ei-badge">ENTREPRENEUR INDIVIDUEL</div>{% endif %}
+        
       </address>
 
       <address id="to">

@@ -2,6 +2,50 @@
 
 {% block title %}Mes factures - EasyInvoice{% endblock %}
 
+{% block extra_css %}
+{{ block.super }}
+<style>
+    /* Mobile optimization pour invoice list */
+    @media (max-width: 768px) {
+        /* Button full width sur mobile */
+        .mb-4 .btn {
+            width: 100%;
+        }
+        
+        /* Table plus compacte */
+        .table {
+            font-size: 0.8rem;
+        }
+        
+        .table th, .table td {
+            padding: 0.5rem 0.25rem;
+        }
+        
+        /* Masquer colonnes moins importantes sur mobile */
+        @media (max-width: 576px) {
+            .table th:nth-child(3),
+            .table td:nth-child(3),
+            .table th:nth-child(4),
+            .table td:nth-child(4) {
+                display: none;
+            }
+            
+            /* Badges plus petits */
+            .badge {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
+            }
+            
+            /* Boutons plus petits */
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <h1 class="page-title">Mes factures</h1>
@@ -34,7 +78,9 @@
                     <tbody>
                         {% for invoice in invoices %}
                             <tr>
-                                <td><strong>{{ invoice.invoice_number }}</strong></td>
+                                <td><a href="{% url 'CORE:invoice_detail' invoice.id %}" class="btn btn-sm btn-outline-primary">
+                                    <strong>{{ invoice.invoice_number }}
+                                </a></strong></td>
                                 <td>{{ invoice.to_name }}</td>
                                 <td>{{ invoice.invoice_date|date:"d/m/Y" }}</td>
                                 <td>{{ invoice.due_date|date:"d/m/Y" }}</td>

@@ -22,7 +22,7 @@ except (ImportError, OSError) as e:
     WEASYPRINT_AVAILABLE = False
     print(f"WeasyPrint non disponible: {e}")
 
-from .forms import InvoiceForm, ItemForm
+from .forms import InvoiceForm, ItemForm, UserProfileForm, ClientForm
 from .models import Invoice, InvoiceItem, UserProfile, Client
 
 
@@ -357,10 +357,10 @@ def generate_invoice_form(request):
                         order=idx,
                     )
             
-            messages.success(request, f'Facture {invoice.invoice_number} créée avec succès !')
+            messages.success(request, f'Facture {invoice.invoice_number} créée avec succès ! Vous pouvez maintenant la consulter et télécharger le PDF.')
             
-            # Rediriger vers le téléchargement PDF
-            return redirect('CORE:invoice_download_pdf', invoice_id=invoice.id)
+            # Rediriger vers la page de détail de la facture
+            return redirect('CORE:invoice_detail', invoice_id=invoice.id)
     else:
         form = InvoiceForm(initial=initial_data)
         items_formset = ItemFormSet(prefix='items')
@@ -406,7 +406,6 @@ def client_list(request):
 @login_required
 def client_create(request):
     """Créer un nouveau client"""
-    from .forms import ClientForm
     if request.method == 'POST':
         form = ClientForm(request.POST)
         if form.is_valid():
@@ -418,6 +417,48 @@ def client_create(request):
     else:
         form = ClientForm()
     return render(request, 'CORE/client_form.html', {'form': form})
+
+
+# ============== PROFIL UTILISATEUR ==============
+
+@login_required
+def profile_edit(request):
+    """Modifier le profil utilisateur"""
+    try:
+        profile = request.user.profile
+    except UserProfile.DoesNotExist:
+        profile = UserProfile.objects.create(user=request.user)
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            profile.company_name = data.get('company_name', '')
+            profile.address = data.get('address', '')
+            profile.city = data.get('city', '')
+            profile.email = data.get('email', '')
+            profile.phone = data.get('phone', '')
+            profile.siret = data.get('siret', '')
+            profile.rcs = data.get('rcs', '')
+            profile.is_ei = data.get('is_ei', False)
+            profile.save()
+            messages.success(request, 'Profil mis à jour avec succès ! Ces informations seront automatiquement pré-remplies dans vos factures.')
+            return redirect('CORE:dashboard')
+    else:
+        # Pré-remplir le formulaire avec les données existantes
+        initial_data = {
+            'company_name': profile.company_name,
+            'address': profile.address,
+            'city': profile.city,
+            'email': profile.email,
+            'phone': profile.phone,
+            'siret': profile.siret,
+            'rcs': profile.rcs,
+            'is_ei': profile.is_ei,
+        }
+        form = UserProfileForm(initial=initial_data)
+    
+    return render(request, 'CORE/profile_edit.html', {'form': form, 'profile': profile})
 
 
 # ============== PAGE D'ACCUEIL PUBLIQUE ==============

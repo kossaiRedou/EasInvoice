@@ -1,0 +1,165 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Mon profil - EasyInvoice{% endblock %}
+
+{% block extra_css %}
+{{ block.super }}
+<style>
+    /* Mobile optimization pour profile edit */
+    @media (max-width: 768px) {
+        /* Buttons en colonne */
+        .d-flex.gap-2 {
+            flex-direction: column;
+            gap: 0.5rem !important;
+        }
+        
+        .d-flex.gap-2 .btn {
+            width: 100%;
+        }
+        
+        /* Sidebar info cards */
+        .col-lg-4 {
+            margin-top: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h1 class="page-title">Mon profil</h1>
+    <p class="page-subtitle">Ces informations seront automatiquement pré-remplies lors de la création de vos factures</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <h5 class="mb-3" style="font-weight: 600; color: var(--blue-primary);">
+                            <i class="fas fa-building me-2"></i>
+                            Informations de l'entreprise
+                        </h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.company_name.label }}</label>
+                            {{ form.company_name }}
+                            <small class="text-muted d-block mt-1">
+                                Votre nom complet ou le nom de votre entreprise
+                            </small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.address.label }}</label>
+                            {{ form.address }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">{{ form.city.label }}</label>
+                                {{ form.city }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">{{ form.phone.label }}</label>
+                                {{ form.phone }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.email.label }}</label>
+                            {{ form.email }}
+                            <small class="text-muted d-block mt-1">
+                                Email professionnel qui apparaîtra sur vos factures
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="mb-4">
+                        <h5 class="mb-3" style="font-weight: 600; color: var(--blue-primary);">
+                            <i class="fas fa-file-contract me-2"></i>
+                            Informations légales
+                        </h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.siret.label }}</label>
+                            {{ form.siret }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">{{ form.rcs.label }}</label>
+                            {{ form.rcs }}
+                        </div>
+                        
+                        <div class="form-check">
+                            {{ form.is_ei }}
+                            <label class="form-check-label">
+                                {{ form.is_ei.label }}
+                            </label>
+                            <small class="text-muted d-block mt-1 ms-4">
+                                Cochez si vous êtes entrepreneur individuel
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-2"></i>
+                            Enregistrer
+                        </button>
+                        <a href="{% url 'CORE:dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i>
+                            Annuler
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="fas fa-info-circle me-2" style="color: var(--blue-primary);"></i>
+                    À quoi ça sert ?
+                </h5>
+                <p class="text-muted small mb-3">
+                    En remplissant votre profil, toutes ces informations seront automatiquement pré-remplies lors de la création de vos factures.
+                </p>
+                <p class="text-muted small mb-0">
+                    <i class="fas fa-check-circle me-1" style="color: var(--green-accent);"></i>
+                    Gain de temps considérable<br>
+                    <i class="fas fa-check-circle me-1" style="color: var(--green-accent);"></i>
+                    Moins d'erreurs<br>
+                    <i class="fas fa-check-circle me-1" style="color: var(--green-accent);"></i>
+                    Factures cohérentes
+                </p>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="fas fa-user-circle me-2" style="color: var(--blue-primary);"></i>
+                    Compte utilisateur
+                </h5>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="user-avatar" style="width: 50px; height: 50px; border-radius: 50%; background: var(--green-accent); display: flex; align-items: center; justify-content: center; font-weight: 600; color: white; font-size: 1.5rem;">
+                        {{ user.username|slice:":1"|upper }}
+                    </div>
+                    <div class="ms-3">
+                        <div style="font-weight: 600;">{{ user.username }}</div>
+                        <div class="text-muted small">{{ user.email }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
