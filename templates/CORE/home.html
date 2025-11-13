@@ -10,33 +10,26 @@
         --hero-blue: #3B82F6;
     }
 
-    /* HERO */
+    /* HERO - Mobile First */
     .hero{
         position: relative;
         color: #fff;
-        padding: 6rem 0 5rem 0;
-        min-height: 680px;
-        display: flex;
-        align-items: center;
+        padding: 2rem 0 2.5rem 0;
         background: 
-            radial-gradient(1400px 700px at 15% 12%, rgba(139,92,246,.35), transparent 65%),
-            radial-gradient(1000px 550px at 85% 18%, rgba(59,130,246,.32), transparent 65%),
-            radial-gradient(600px 400px at 50% 90%, rgba(236,72,153,.18), transparent 70%),
+            radial-gradient(800px 500px at 50% 20%, rgba(139,92,246,.28), transparent 65%),
+            radial-gradient(600px 400px at 50% 80%, rgba(59,130,246,.22), transparent 70%),
             linear-gradient(135deg, #581C87 0%, #1E3A8A 100%);
         overflow: hidden;
-        text-align: left;
     }
-    @media (max-width: 991px){
-        .hero{ 
-            padding: 4rem 0 3rem 0; 
-            min-height: 600px; 
-        }
+    @media (min-width: 768px){
+        .hero{ padding: 4rem 0 3.5rem 0; }
     }
-    @media (max-width: 767px){
+    @media (min-width: 992px){
         .hero{ 
-            padding: 3rem 0 2.5rem 0; 
-            min-height: auto;
-            text-align: center;
+            padding: 5rem 0 4rem 0; 
+            min-height: 600px;
+            display: flex;
+            align-items: center;
         }
     }
     .hero::before{
@@ -59,10 +52,35 @@
         pointer-events:none;
     }
     @keyframes moveGlow { from{ transform: translate(-12px, -8px);} to{ transform: translate(12px, 8px);} }
-    .brand-corner{ position: absolute; top: 16px; right:200px; left: auto; z-index: 10; }
-    .brand-corner .brand-logo{ width: 300px; max-width: 40vw; height: auto; filter: drop-shadow(0 8px 18px rgba(0,0,0,.25)); }
-    @media (max-width: 992px){ .brand-corner{ right: 100px; } .brand-corner .brand-logo{ width: 200px; } }
-    @media (max-width: 767px){ .brand-corner{ position: static; text-align: center; margin-bottom: 1.5rem; } .brand-corner .brand-logo{ width: 180px; max-width: 60vw; } }
+    /* Logo - Mobile First */
+    .brand-corner{ 
+        display: block;
+        text-align: center; 
+        margin-bottom: 1.25rem;
+        padding-top: .5rem;
+    }
+    .brand-corner .brand-logo{ 
+        width: 140px; 
+        height: auto; 
+        filter: drop-shadow(0 4px 12px rgba(0,0,0,.3)); 
+    }
+    @media (min-width: 768px){
+        .brand-corner .brand-logo{ width: 160px; }
+    }
+    @media (min-width: 992px){ 
+        .brand-corner{ 
+            position: absolute; 
+            top: 20px; 
+            right: 150px; 
+            margin-bottom: 0;
+            padding-top: 0;
+        }
+        .brand-corner .brand-logo{ width: 240px; }
+    }
+    @media (min-width: 1200px){
+        .brand-corner{ right: 200px; }
+        .brand-corner .brand-logo{ width: 280px; }
+    }
     .hero-inner{
         display: block; /* override grid to align with custom .row layout */
         gap: 2rem;
@@ -71,24 +89,43 @@
     @media (min-width: 992px){
         .hero-inner{ grid-template-columns: 1.2fr 1fr; }
     }
+    /* Typography - Mobile First */
     .hero-title{
         font-family: 'Poppins', sans-serif;
         font-weight: 800;
-        line-height: 1.15;
-        letter-spacing: .2px;
-        font-size: clamp(1.75rem, 4vw + 1rem, 3.4rem);
-        margin: 0 0 1rem 0;
-        text-shadow: 0 6px 24px rgba(0,0,0,.2);
+        line-height: 1.2;
+        letter-spacing: -.3px;
+        font-size: 1.65rem;
+        margin: 0 0 .85rem 0;
+        text-shadow: 0 4px 16px rgba(0,0,0,.3);
+        text-align: center;
     }
     .hero-subtitle{
-        font-size: clamp(1rem, 1.2vw + .8rem, 1.25rem);
-        opacity: .95;
-        margin-bottom: 1.75rem;
-        line-height: 1.6;
+        font-size: .95rem;
+        opacity: .92;
+        margin-bottom: 1.25rem;
+        line-height: 1.5;
+        text-align: center;
     }
-    @media (max-width: 767px){
-        .hero-title{ font-size: clamp(1.5rem, 6vw, 2rem); margin-bottom: 1rem; }
-        .hero-subtitle{ font-size: 1rem; margin-bottom: 1.5rem; }
+    @media (min-width: 768px){
+        .hero-title{ font-size: 2.2rem; margin-bottom: 1rem; }
+        .hero-subtitle{ font-size: 1.05rem; margin-bottom: 1.5rem; }
+    }
+    @media (min-width: 992px){
+        .hero-title{ 
+            font-size: 3rem; 
+            text-align: left; 
+            margin-bottom: 1.2rem;
+            letter-spacing: .2px;
+        }
+        .hero-subtitle{ 
+            font-size: 1.2rem; 
+            text-align: left; 
+            margin-bottom: 1.75rem; 
+        }
+    }
+    @media (min-width: 1200px){
+        .hero-title{ font-size: 3.4rem; }
     }
     .brand-gradient{ 
         background: linear-gradient(120deg, #FDE68A 0%, #A7F3D0 35%, #60A5FA 70%, #C084FC 100%); 
@@ -102,30 +139,49 @@
     .hero-title::after{ 
         content:''; 
         display:block; 
-        height:10px; 
-        width:180px; 
+        height:6px; 
+        width:80px; 
         border-radius:999px; 
-        margin-top:14px; 
+        margin: 10px auto 0 auto; 
         background: linear-gradient(90deg, rgba(251,191,36,.75), rgba(167,243,208,.6), rgba(96,165,250,.5)); 
-        box-shadow: 0 4px 16px rgba(251,191,36,.35);
+        box-shadow: 0 3px 12px rgba(251,191,36,.3);
     }
+    @media (min-width: 992px){
+        .hero-title::after{ 
+            height:8px; 
+            width:140px; 
+            margin: 12px 0 0 0; 
+        }
+    }
+    /* CTA Buttons - Mobile First */
     .hero-actions{
-        justify-content: flex-start;
-    }
-    @media (max-width: 767px){
-        .hero-actions{ justify-content: center; }
+        justify-content: center;
+        gap: .75rem;
     }
     .hero-actions .btn{
         border-radius: 999px;
-        padding: .9rem 1.4rem;
+        padding: .75rem 1.1rem;
         font-weight: 700;
         letter-spacing: .2px;
-        transition: transform .15s ease, box-shadow .2s ease, opacity .2s ease;
-        box-shadow: 0 10px 24px rgba(0,0,0,.18);
-        min-width: 180px;
+        transition: transform .15s ease, box-shadow .2s ease;
+        box-shadow: 0 8px 20px rgba(0,0,0,.2);
+        font-size: .9rem;
+        flex: 1;
+        min-width: 0;
+        max-width: 200px;
     }
-    @media (max-width: 576px){
-        .hero-actions .btn{ min-width: 160px; padding: .8rem 1.2rem; font-size: .95rem; }
+    @media (min-width: 768px){
+        .hero-actions .btn{ 
+            padding: .85rem 1.3rem; 
+            font-size: .95rem;
+            flex: 0;
+            min-width: 180px;
+            max-width: none;
+        }
+    }
+    @media (min-width: 992px){
+        .hero-actions{ justify-content: flex-start; gap: .85rem; }
+        .hero-actions .btn{ padding: .9rem 1.4rem; font-size: 1rem; min-width: 200px; }
     }
     .btn-cta-primary{
         background: linear-gradient(90deg, var(--hero-purple), var(--hero-blue));
@@ -156,35 +212,70 @@
     .preview-title{ font-weight: 700; margin-bottom: .5rem; }
     .preview-line{ display: flex; justify-content: space-between; font-size: .95rem; opacity: .95; }
     .preview-total{ display: flex; justify-content: space-between; font-weight: 800; font-size: 1.1rem; margin-top: .5rem; }
+    /* Invoice Screenshot - Mobile First */
     .invoice-shot{
-        border-radius: 16px;
-        border: 1px solid rgba(255,255,255,.25);
-        background: rgba(255,255,255,.06);
-        box-shadow: 0 14px 34px rgba(0,0,0,.35);
-        width: 100%;
-        max-width: 260px;
-        animation: floatY 6s ease-in-out infinite;
-        margin-top: 3rem;
+        display: none;
     }
-    @media (max-width: 767px){
-        .invoice-shot{ max-width: 280px; margin: 2rem auto 0 auto; display: block; }
+    @media (min-width: 768px){
+        .invoice-shot{
+            display: block;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,.2);
+            background: rgba(255,255,255,.05);
+            box-shadow: 0 8px 24px rgba(0,0,0,.25);
+            width: 100%;
+            max-width: 280px;
+            max-height: 350px;
+            object-fit: contain;
+            margin: 0 auto;
+        }
+    }
+    @media (min-width: 992px){
+        .invoice-shot{ 
+            animation: floatY 6s ease-in-out infinite;
+            max-width: 240px;
+            max-height: 320px;
+        }
+    }
+    @media (min-width: 1200px){
+        .invoice-shot{ 
+            max-width: 280px;
+            max-height: 380px;
+        }
     }
     .hero .hero-logo{ width: 96px; max-width: 100%; height: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,.25)); animation: floatY 7s ease-in-out infinite reverse; }
     @keyframes floatY { from{ transform: translateY(-6px);} 50%{ transform: translateY(4px);} to{ transform: translateY(-6px);} }
 
+    /* Badges - Mobile First */
     .badge-chip{
-        display:inline-flex; align-items:center; gap:.4rem;
-        padding:.5rem .85rem; border-radius:999px; font-weight:600; font-size:.9rem;
+        display:inline-flex; 
+        align-items:center; 
+        gap:.35rem;
+        padding:.4rem .65rem; 
+        border-radius:999px; 
+        font-weight:600; 
+        font-size:.8rem;
         color:#fff; 
-        background: linear-gradient(135deg, rgba(139,92,246,.25), rgba(59,130,246,.2)); 
-        border:1.5px solid rgba(255,255,255,.25);
-        backdrop-filter: blur(6px);
-        box-shadow: 0 4px 12px rgba(0,0,0,.15);
-        transition: transform .15s ease, box-shadow .2s ease;
+        background: linear-gradient(135deg, rgba(139,92,246,.2), rgba(59,130,246,.18)); 
+        border:1px solid rgba(255,255,255,.2);
+        backdrop-filter: blur(4px);
+        box-shadow: 0 3px 10px rgba(0,0,0,.12);
+        transition: transform .15s ease;
     }
-    .badge-chip:hover{ transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
-    @media (max-width: 767px){
-        .badge-chip{ font-size: .85rem; padding: .45rem .75rem; }
+    @media (min-width: 768px){
+        .badge-chip{ 
+            padding:.45rem .75rem; 
+            font-size:.85rem; 
+            gap:.4rem;
+        }
+    }
+    @media (min-width: 992px){
+        .badge-chip{ 
+            padding:.5rem .85rem; 
+            font-size:.9rem; 
+            border:1.5px solid rgba(255,255,255,.25);
+        }
+        .badge-chip:hover{ transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.2); }
     }
 
     /* Sections */
@@ -303,14 +394,21 @@
     .footer-links a:hover{ color: #fff; }
     .footer-note{ border-top: 1px dashed rgba(255,255,255,.12); margin-top: 1.2rem; padding-top: .9rem; color: #cbd5e1; }
 
-    @media (min-width: 992px) {
-        .invoice-shot { margin-top: 6rem; }
+    /* Global Mobile Improvements */
+    .container{ 
+        padding-left: 1rem; 
+        padding-right: 1rem; 
+    }
+    @media (min-width: 768px) {
+        .container{ padding-left: 1.5rem; padding-right: 1.5rem; }
     }
     
-    /* Mobile spacing improvements */
-    @media (max-width: 767px) {
-        .section{ padding: 3rem 0; }
-        .container{ padding-left: 1.25rem; padding-right: 1.25rem; }
+    .section{ padding: 2.5rem 0; }
+    @media (min-width: 768px) {
+        .section{ padding: 3.5rem 0; }
+    }
+    @media (min-width: 992px) {
+        .section{ padding: 4.5rem 0; }
     }
 </style>
 {% endblock %}
@@ -325,25 +423,25 @@
     <div class="container">
         <div class="hero-inner">
             <div class="row align-items-center">
-                <div class="col-lg-7 col-md-12">
+                <div class="col-12 col-lg-7">
                     <h1 class="hero-title"><span class="brand-gradient">fluktura</span> — créez, envoyez et suivez vos factures</h1>
                     <p class="hero-subtitle">La solution rapide et mobile‑first pour générer des factures professionnelles, suivre les paiements et gérer vos clients en un clin d'œil.</p>
-                    <div class="hero-actions d-flex flex-wrap gap-2 mb-3">
+                    <div class="hero-actions d-flex flex-wrap mb-2">
                         <a href="{% url 'CORE:register' %}" class="btn btn-cta-primary">
-                            <i class="fas fa-rocket me-2"></i> Commencer gratuitement
+                            <i class="fas fa-rocket me-1 d-none d-lg-inline"></i><i class="fas fa-rocket me-1 d-lg-none"></i> <span class="d-none d-lg-inline">Commencer gratuitement</span><span class="d-lg-none">Commencer</span>
                         </a>
                         <a href="{% url 'CORE:login' %}" class="btn btn-cta-secondary">
-                            <i class="fas fa-play me-2"></i> Voir comment ça marche
+                            <i class="fas fa-sign-in-alt me-1 d-lg-none"></i><i class="fas fa-play me-1 d-none d-lg-inline"></i> <span class="d-none d-lg-inline">j'ai déjà un compte</span><span class="d-lg-none">Connexion</span>
                         </a>
                     </div>
-                    <div class="d-flex flex-wrap gap-2 justify-content-start justify-content-md-center justify-content-lg-start">
-                        <span class="badge-chip"><i class="fas fa-mobile-alt me-1"></i> Mobile‑first</span>
-                        <span class="badge-chip"><i class="fas fa-file-pdf me-1"></i> PDF instantané</span>
-                        <span class="badge-chip"><i class="fas fa-gift me-1"></i> 100% gratuit</span>
+                    <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-lg-start">
+                        <span class="badge-chip"><i class="fas fa-mobile-alt"></i> <span class="d-none d-lg-inline">Créer</span></span>
+                        <span class="badge-chip"><i class="fas fa-file-pdf"></i> <span class="d-none d-lg-inline">Partager</span><span class="d-lg-none">Partager</span></span>
+                        <span class="badge-chip"><i class="fas fa-gift"></i> <span class="d-none d-lg-inline">100% gratuit</span><span class="d-lg-none">Gratuit</span></span>
                     </div>
                 </div>
-                <div class="col-lg-5 col-md-12 text-lg-end text-center mt-4 mt-lg-0">
-                    <img class="invoice-shot w-100 mt-5" src="{% static 'CORE/img/invoice_example.png' %}" alt="Exemple de facture fluktura" onerror="this.style.display='none'">
+                <div class="col-12 col-lg-5 mt-3 mt-lg-0 text-center text-lg-end">
+                    <img class="invoice-shot" src="{% static 'CORE/img/invoice_example.png' %}" alt="Exemple de facture fluktura" onerror="this.style.display='none'">
                 </div>
             </div>
         </div>
