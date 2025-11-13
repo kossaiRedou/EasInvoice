@@ -3,246 +3,86 @@
 
 {% block extra_css %}
 <style>
-    :root {
-        --fluk-green: #00C776;
-        --fluk-purple: #6A1B9A;
-        --fluk-dark: #0d1117;
-    }
-    
     body {
-        background: 
-            radial-gradient(1000px 600px at 20% 15%, rgba(106,27,154,.25), transparent 60%),
-            radial-gradient(900px 500px at 80% 25%, rgba(0,199,118,.18), transparent 65%),
-            linear-gradient(145deg, #0d1117 0%, #1a1f35 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1.5rem 1rem;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    body::before {
-        content: '';
-        position: absolute;
-        top: -20%;
-        right: -10%;
-        width: 40%;
-        height: 60%;
-        background: radial-gradient(circle, rgba(0,199,118,.08), transparent 70%);
-        filter: blur(60px);
-        animation: float 15s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-        0%, 100% { transform: translate(0, 0); }
-        50% { transform: translate(-30px, 30px); }
+        padding: 2rem 1rem;
     }
     
     .auth-container {
         width: 100%;
-        max-width: 460px;
-        position: relative;
-        z-index: 1;
+        max-width: 500px;
     }
     
     .auth-card {
-        background: rgba(255,255,255,.97);
-        border-radius: 24px;
-        padding: 2.5rem 2rem;
-        box-shadow: 0 20px 60px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,.15);
-        transition: transform .2s ease, box-shadow .3s ease;
-    }
-    
-    .auth-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 24px 70px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.2);
+        background: white;
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
     }
     
     .auth-logo {
-        width: 140px;
-        height: auto;
+        height: 150px;
         display: block;
-        margin: 0 auto 1.25rem;
-        filter: drop-shadow(0 4px 12px rgba(106,27,154,.2));
-        animation: logoFloat 6s ease-in-out infinite;
-    }
-    
-    @keyframes logoFloat {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-8px); }
+        margin: 0 auto 1.5rem;
     }
     
     .auth-title {
         font-family: 'Poppins', sans-serif;
-        background: linear-gradient(120deg, var(--fluk-purple), var(--fluk-green));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        font-size: 1.75rem;
-        margin-bottom: 1.25rem;
+        color: var(--blue-primary);
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
         text-align: center;
-        font-weight: 800;
-        letter-spacing: -.3px;
-    }
-    
-    .form-label {
-        font-weight: 600;
-        color: var(--fluk-dark);
-        margin-bottom: 0.5rem;
-        font-size: .95rem;
-    }
-    
-    .form-control {
-        border: 1.5px solid rgba(106,27,154,.15);
-        border-radius: 12px;
-        padding: .75rem 1rem;
-        transition: all .2s ease;
-        background: rgba(255,255,255,.6);
-    }
-    
-    .form-control:hover {
-        border-color: rgba(106,27,154,.25);
-        background: rgba(255,255,255,.8);
+        font-weight: 700;
     }
     
     .form-control:focus {
-        border-color: var(--fluk-green);
-        box-shadow: 0 0 0 3px rgba(0,199,118,.12), 0 4px 12px rgba(0,199,118,.15);
-        background: #fff;
-        transform: translateY(-1px);
+        border-color: var(--blue-primary);
+        box-shadow: 0 0 0 0.2rem rgba(89, 15, 99, 0.25);
     }
     
     .btn-primary {
         width: 100%;
-        padding: .875rem;
-        font-weight: 700;
-        font-size: 1rem;
-        border-radius: 12px;
-        background: linear-gradient(135deg, var(--fluk-purple) 0%, var(--fluk-green) 100%);
-        border: none;
-        box-shadow: 0 8px 20px rgba(106,27,154,.25);
-        transition: all .2s ease;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .btn-primary::after {
-        content: '';
-        position: absolute;
-        inset: 0 -100% 0 auto;
-        width: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
-        transition: transform .4s ease;
-    }
-    
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px rgba(106,27,154,.35);
-        background: linear-gradient(135deg, #7C26AD 0%, #00D984 100%);
-    }
-    
-    .btn-primary:hover::after {
-        transform: translateX(100%);
-    }
-    
-    .btn-primary:active {
-        transform: translateY(0);
+        padding: 0.875rem;
+        font-weight: 600;
+        font-size: 1.05rem;
     }
     
     .auth-divider {
-        margin: 1.75rem 0;
-        border: none;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(106,27,154,.2), transparent);
+        margin: 2rem 0;
+        border-top: 1px solid var(--border-color);
     }
     
     .auth-link {
         text-align: center;
-        color: #555;
-        margin-top: .85rem;
-        font-size: .95rem;
+        color: var(--text-secondary);
+        margin-top: 1rem;
     }
     
     .auth-link a {
-        color: var(--fluk-purple);
+        color: var(--blue-primary);
         text-decoration: none;
-        font-weight: 700;
-        transition: color .2s ease;
-        position: relative;
-    }
-    
-    .auth-link a::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--fluk-purple), var(--fluk-green));
-        transform: scaleX(0);
-        transition: transform .3s ease;
+        font-weight: 600;
     }
     
     .auth-link a:hover {
-        color: var(--fluk-green);
-    }
-    
-    .auth-link a:hover::after {
-        transform: scaleX(1);
+        text-decoration: underline;
     }
     
     .helptext {
-        font-size: .8rem;
-        color: #777;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
         display: block;
-        margin-top: 0.35rem;
-        line-height: 1.4;
+        margin-top: 0.25rem;
     }
     
-    .alert {
-        border-radius: 12px;
-        border-left: 4px solid;
-        animation: slideIn .4s ease;
-    }
-    
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateY(-10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .alert-danger {
-        background: rgba(239,68,68,.08);
-        border-left-color: #EF4444;
-        color: #991B1B;
-    }
-    
-    .alert-success {
-        background: rgba(0,199,118,.08);
-        border-left-color: var(--fluk-green);
-        color: #065F46;
-    }
-    
-    .text-danger {
-        color: #EF4444 !important;
-        font-size: .85rem;
-    }
-    
-    /* Mobile */
-    @media (max-width: 576px) {
-        .auth-card {
-            padding: 2rem 1.5rem;
-            border-radius: 20px;
-        }
-        .auth-logo {
-            width: 120px;
-        }
-        .auth-title {
-            font-size: 1.5rem;
-        }
+    .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
     }
 </style>
 {% endblock %}
@@ -250,7 +90,7 @@
 {% block body %}
 <div class="auth-container">
     <div class="auth-card">
-        <img src="{% static 'CORE/img/logobg.png' %}" alt="fluktura" class="auth-logo">
+        <img class="img-fluid" src="{% static 'CORE/img/logoauth.png' %}" alt="EasyInvoice" class="auth-logo">
         <h3 class="auth-title">{% block auth_title %}{% endblock %}</h3>
         
         {% if messages %}
