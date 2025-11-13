@@ -1,205 +1,459 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}EasyInvoice - Générateur de factures gratuit{% endblock %}
+{% block title %}fluktura - Générateur de factures gratuit{% endblock %}
 
 {% block extra_css %}
 <style>
-    .hero {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 5rem 0;
-        text-align: center;
+    :root{
+        --hero-purple: #6A1B9A;
+        --hero-blue: #3B82F6;
     }
-    
-    .hero h1 {
+
+    /* HERO */
+    .hero{
+        position: relative;
+        color: #fff;
+        padding: 6rem 0 5rem 0;
+        min-height: 680px;
+        display: flex;
+        align-items: center;
+        background: 
+            radial-gradient(1400px 700px at 15% 12%, rgba(139,92,246,.35), transparent 65%),
+            radial-gradient(1000px 550px at 85% 18%, rgba(59,130,246,.32), transparent 65%),
+            radial-gradient(600px 400px at 50% 90%, rgba(236,72,153,.18), transparent 70%),
+            linear-gradient(135deg, #581C87 0%, #1E3A8A 100%);
+        overflow: hidden;
+        text-align: left;
+    }
+    @media (max-width: 991px){
+        .hero{ 
+            padding: 4rem 0 3rem 0; 
+            min-height: 600px; 
+        }
+    }
+    @media (max-width: 767px){
+        .hero{ 
+            padding: 3rem 0 2.5rem 0; 
+            min-height: auto;
+            text-align: center;
+        }
+    }
+    .hero::before{
+        content:'';
+        position:absolute; inset:-20% -10% auto -10%;
+        height: 60%;
+        background: radial-gradient(40% 65% at 65% 35%, rgba(255,255,255,.16), transparent 60%);
+        filter: blur(24px);
+        animation: moveGlow 12s ease-in-out infinite alternate;
+        pointer-events:none;
+    }
+    .hero::after{
+        content:'';
+        position:absolute; inset:auto -15% -15% auto;
+        width: 40%;
+        height: 40%;
+        background: radial-gradient(circle at center, rgba(251,191,36,.14), transparent 65%);
+        filter: blur(30px);
+        animation: moveGlow 14s ease-in-out infinite alternate-reverse;
+        pointer-events:none;
+    }
+    @keyframes moveGlow { from{ transform: translate(-12px, -8px);} to{ transform: translate(12px, 8px);} }
+    .brand-corner{ position: absolute; top: 16px; right:200px; left: auto; z-index: 10; }
+    .brand-corner .brand-logo{ width: 300px; max-width: 40vw; height: auto; filter: drop-shadow(0 8px 18px rgba(0,0,0,.25)); }
+    @media (max-width: 992px){ .brand-corner{ right: 100px; } .brand-corner .brand-logo{ width: 200px; } }
+    @media (max-width: 767px){ .brand-corner{ position: static; text-align: center; margin-bottom: 1.5rem; } .brand-corner .brand-logo{ width: 180px; max-width: 60vw; } }
+    .hero-inner{
+        display: block; /* override grid to align with custom .row layout */
+        gap: 2rem;
+        align-items: center;
+    }
+    @media (min-width: 992px){
+        .hero-inner{ grid-template-columns: 1.2fr 1fr; }
+    }
+    .hero-title{
         font-family: 'Poppins', sans-serif;
-        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: .2px;
+        font-size: clamp(1.75rem, 4vw + 1rem, 3.4rem);
+        margin: 0 0 1rem 0;
+        text-shadow: 0 6px 24px rgba(0,0,0,.2);
+    }
+    .hero-subtitle{
+        font-size: clamp(1rem, 1.2vw + .8rem, 1.25rem);
+        opacity: .95;
+        margin-bottom: 1.75rem;
+        line-height: 1.6;
+    }
+    @media (max-width: 767px){
+        .hero-title{ font-size: clamp(1.5rem, 6vw, 2rem); margin-bottom: 1rem; }
+        .hero-subtitle{ font-size: 1rem; margin-bottom: 1.5rem; }
+    }
+    .brand-gradient{ 
+        background: linear-gradient(120deg, #FDE68A 0%, #A7F3D0 35%, #60A5FA 70%, #C084FC 100%); 
+        -webkit-background-clip: text; 
+        background-clip: text; 
+        color: transparent;
+        animation: hueShift 8s ease-in-out infinite;
+    }
+    @keyframes hueShift { 0%, 100%{ filter: hue-rotate(0deg);} 50%{ filter: hue-rotate(15deg);} }
+    .hero-title{ position: relative; }
+    .hero-title::after{ 
+        content:''; 
+        display:block; 
+        height:10px; 
+        width:180px; 
+        border-radius:999px; 
+        margin-top:14px; 
+        background: linear-gradient(90deg, rgba(251,191,36,.75), rgba(167,243,208,.6), rgba(96,165,250,.5)); 
+        box-shadow: 0 4px 16px rgba(251,191,36,.35);
+    }
+    .hero-actions{
+        justify-content: flex-start;
+    }
+    @media (max-width: 767px){
+        .hero-actions{ justify-content: center; }
+    }
+    .hero-actions .btn{
+        border-radius: 999px;
+        padding: .9rem 1.4rem;
         font-weight: 700;
-        margin-bottom: 1.5rem;
+        letter-spacing: .2px;
+        transition: transform .15s ease, box-shadow .2s ease, opacity .2s ease;
+        box-shadow: 0 10px 24px rgba(0,0,0,.18);
+        min-width: 180px;
     }
-    
-    .hero p {
-        font-size: 1.25rem;
-        margin-bottom: 2rem;
+    @media (max-width: 576px){
+        .hero-actions .btn{ min-width: 160px; padding: .8rem 1.2rem; font-size: .95rem; }
     }
-    
-    .hero img {
-        height: 120px;
-        margin-bottom: 2rem;
+    .btn-cta-primary{
+        background: linear-gradient(90deg, var(--hero-purple), var(--hero-blue));
+        color: #fff;
+        border: 0;
+        position: relative;
+        overflow: hidden;
     }
-    
-    .btn-hero {
-        background: white;
-        color: var(--blue-primary);
-        padding: 1rem 2.5rem;
-        font-size: 1.1rem;
-        font-weight: 700;
-        border: none;
-        border-radius: 50px;
-        margin: 0.5rem;
-        transition: all 0.2s;
+    .btn-cta-primary::after{
+        content:''; position:absolute; inset:0 -120% 0 auto; width:120%; background: linear-gradient(90deg, rgba(255,255,255,.0), rgba(255,255,255,.25), rgba(255,255,255,.0));
+        transform: translateX(-100%);
+        transition: transform .35s ease;
     }
-    
-    .btn-hero:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    .btn-cta-primary:hover{ transform: translateY(-2px); box-shadow: 0 16px 32px rgba(0,0,0,.22); }
+    .btn-cta-primary:hover::after{ transform: translateX(0); }
+    .btn-cta-secondary{
+        background: rgba(255,255,255,.08);
+        color: #fff;
+        border: 2px solid rgba(255,255,255,.35);
+        backdrop-filter: blur(4px);
     }
-    
-    .feature-card {
-        padding: 2rem;
-        border-radius: 12px;
-        background: white;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    .btn-cta-secondary:hover{ transform: translateY(-2px); box-shadow: 0 16px 32px rgba(0,0,0,.22); background: rgba(255,255,255,.12); }
+    .orb{ position: absolute; border-radius: 50%; filter: blur(8px); opacity: .85; }
+    .orb-lg{ width: 260px; height: 260px; right: 10%; top: -10%; background: radial-gradient(circle at 30% 30%, #8B5CF6, #3B82F6); }
+    .orb-sm{ width: 140px; height: 140px; left: 5%; bottom: 0; background: radial-gradient(circle at 30% 30%, #F472B6, #6A1B9A); opacity: .7; }
+    .preview-card{ background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); color: #fff; border-radius: 16px; padding: 1rem 1rem 1.2rem 1rem; backdrop-filter: blur(8px); box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    .preview-card .row{ --bs-gutter-x: .75rem; }
+    .preview-title{ font-weight: 700; margin-bottom: .5rem; }
+    .preview-line{ display: flex; justify-content: space-between; font-size: .95rem; opacity: .95; }
+    .preview-total{ display: flex; justify-content: space-between; font-weight: 800; font-size: 1.1rem; margin-top: .5rem; }
+    .invoice-shot{
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,.25);
+        background: rgba(255,255,255,.06);
+        box-shadow: 0 14px 34px rgba(0,0,0,.35);
+        width: 100%;
+        max-width: 260px;
+        animation: floatY 6s ease-in-out infinite;
+        margin-top: 3rem;
+    }
+    @media (max-width: 767px){
+        .invoice-shot{ max-width: 280px; margin: 2rem auto 0 auto; display: block; }
+    }
+    .hero .hero-logo{ width: 96px; max-width: 100%; height: auto; filter: drop-shadow(0 6px 14px rgba(0,0,0,.25)); animation: floatY 7s ease-in-out infinite reverse; }
+    @keyframes floatY { from{ transform: translateY(-6px);} 50%{ transform: translateY(4px);} to{ transform: translateY(-6px);} }
+
+    .badge-chip{
+        display:inline-flex; align-items:center; gap:.4rem;
+        padding:.5rem .85rem; border-radius:999px; font-weight:600; font-size:.9rem;
+        color:#fff; 
+        background: linear-gradient(135deg, rgba(139,92,246,.25), rgba(59,130,246,.2)); 
+        border:1.5px solid rgba(255,255,255,.25);
+        backdrop-filter: blur(6px);
+        box-shadow: 0 4px 12px rgba(0,0,0,.15);
+        transition: transform .15s ease, box-shadow .2s ease;
+    }
+    .badge-chip:hover{ transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+    @media (max-width: 767px){
+        .badge-chip{ font-size: .85rem; padding: .45rem .75rem; }
+    }
+
+    /* Sections */
+    .section{ padding: 4rem 0; }
+    .section-title{ font-family: 'Poppins', sans-serif; font-weight: 800; letter-spacing: .2px; margin-bottom: .5rem; }
+    .section-subtitle{ color: var(--text-secondary); margin-bottom: 2rem; }
+
+    /* Steps */
+    .steps-wrap{ display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+    @media (min-width: 768px){ .steps-wrap{ grid-template-columns: repeat(3, 1fr); gap: 1.5rem; } }
+    .step-card{
+        background: linear-gradient(145deg, #1a1f35, #0d1117);
+        color: #e5e7eb;
+        border: 1.5px solid rgba(139,92,246,.15);
+        border-radius: 20px;
+        padding: 1.5rem 1.5rem 1.75rem 1.5rem;
+        box-shadow: 0 8px 24px rgba(2,6,23,.35), inset 0 1px 0 rgba(255,255,255,.03);
+        transition: transform .2s ease, box-shadow .3s ease, border-color .3s ease;
         height: 100%;
-        transition: all 0.2s;
+        opacity: 0; transform: translateY(20px);
+        animation: fadeUp .8s ease forwards;
+        position: relative;
+        overflow: hidden;
+    }
+    .step-card::before{
+        content:'';
+        position:absolute; inset: 0;
+        background: radial-gradient(circle at top right, rgba(139,92,246,.08), transparent 60%);
+        opacity: 0;
+        transition: opacity .3s ease;
+    }
+    .step-card:hover::before{ opacity: 1; }
+    .steps-wrap .step-card:nth-child(1){ animation-delay: .1s; }
+    .steps-wrap .step-card:nth-child(2){ animation-delay: .25s; }
+    .steps-wrap .step-card:nth-child(3){ animation-delay: .4s; }
+    @keyframes fadeUp { to{ opacity:1; transform: translateY(0);} }
+    .step-card:hover{ transform: translateY(-6px); box-shadow: 0 16px 36px rgba(2,6,23,.45), inset 0 1px 0 rgba(255,255,255,.06); border-color: rgba(139,92,246,.35); }
+    .step-badge{
+        width: 60px; height: 60px; border-radius: 14px;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: linear-gradient(135deg, rgba(106,27,154,.9), rgba(59,130,246,.9));
+        color: #fff; font-size: 1.4rem; margin-bottom: .9rem;
+        box-shadow: 0 10px 22px rgba(59,130,246,.25);
+    }
+    .step-title{ font-weight: 700; color: #fff; }
+    .step-text{ color: #cbd5e1; margin: 0; }
+
+    /* Contact */
+    .contact{ 
+        background: linear-gradient(165deg, #0d1117 0%, #1a1f35 100%); 
+        position: relative;
+    }
+    .contact::before{
+        content:'';
+        position:absolute; top:0; left:0; right:0; height:1px;
+        background: linear-gradient(90deg, transparent, rgba(139,92,246,.35), transparent);
+    }
+    .contact-card{
+        background: rgba(255,255,255,.04);
+        border: 1.5px solid rgba(139,92,246,.12);
+        border-radius: 20px;
+        padding: 1.75rem;
+        box-shadow: 0 12px 32px rgba(2,6,23,.45), inset 0 1px 0 rgba(255,255,255,.04);
+        transition: box-shadow .3s ease, border-color .3s ease;
+    }
+    .contact-card:hover{
+        border-color: rgba(139,92,246,.25);
+        box-shadow: 0 16px 40px rgba(2,6,23,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .contact .form-control{
+        background: rgba(255,255,255,.05);
+        border: 1.5px solid rgba(255,255,255,.12);
+        color: #e5e7eb;
+        border-radius: 14px;
+        padding: 1rem 1.1rem;
+        transition: all .2s ease;
+    }
+    .contact .form-control:focus{
+        background: rgba(255,255,255,.08);
+        color: #fff;
+        border-color: rgba(96,165,250,.5);
+        box-shadow: 0 0 0 3px rgba(96,165,250,.12), 0 4px 12px rgba(59,130,246,.25);
+        transform: translateY(-1px);
+    }
+
+    /* CTA */
+    .cta{ 
+        background: linear-gradient(180deg, #f9fafb 0%, #e5e7eb 100%); 
+        text-align: center; 
+        padding: 5rem 0; 
+        position: relative;
+    }
+    .cta::before{
+        content:'';
+        position:absolute; inset:0;
+        background: radial-gradient(ellipse 800px 400px at 50% 50%, rgba(139,92,246,.08), transparent 70%);
+        pointer-events:none;
+    }
+    .cta .section-title{ color: var(--text-primary); position: relative; z-index: 1; }
+    .cta .btn{ position: relative; z-index: 1; }
+
+    /* Footer */
+    footer{
+        background: radial-gradient(900px 400px at 10% 10%, rgba(106,27,154,.25), transparent 60%),
+                    radial-gradient(900px 400px at 90% 20%, rgba(59,130,246,.22), transparent 60%),
+                    #0f172a;
+        color: #fff;
+        padding: 2.2rem 0 2rem 0;
+        border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .footer-grid{ display: grid; gap: 1.5rem; }
+    @media (min-width: 992px){ .footer-grid{ grid-template-columns: 1.2fr .8fr .8fr; } }
+    .footer-logo{ height: 42px; margin-bottom: .75rem; }
+    .footer-title{ font-weight: 700; margin-bottom: .75rem; }
+    .footer-links a{ display: block; color: #cbd5e1; text-decoration: none; padding: .25rem 0; }
+    .footer-links a:hover{ color: #fff; }
+    .footer-note{ border-top: 1px dashed rgba(255,255,255,.12); margin-top: 1.2rem; padding-top: .9rem; color: #cbd5e1; }
+
+    @media (min-width: 992px) {
+        .invoice-shot { margin-top: 6rem; }
     }
     
-    .feature-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-    }
-    
-    .feature-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-    }
-    
-    .features-section {
-        background: white;
-        padding: 5rem 0;
-    }
-    
-    .cta-section {
-        background: var(--bg-page);
-        padding: 4rem 0;
-    }
-    
-    footer {
-        background: #1F2937;
-        color: white;
-        padding: 2rem 0;
-    }
-    
-    footer a {
-        color: white;
-        text-decoration: none;
-    }
-    
-    footer a:hover {
-        text-decoration: underline;
+    /* Mobile spacing improvements */
+    @media (max-width: 767px) {
+        .section{ padding: 3rem 0; }
+        .container{ padding-left: 1.25rem; padding-right: 1.25rem; }
     }
 </style>
 {% endblock %}
 
 {% block body %}
-<!-- Hero Section -->
-<div class="hero">
+<!-- HERO -->
+<section class="hero">
+    <a class="brand-corner" href="{% url 'CORE:home' %}">
+        <img class="brand-logo" src="{% static 'CORE/img/logobg.png' %}" alt="fluktura">
+    </a>
+    
     <div class="container">
-        <img src="{% static 'CORE/img/easyLogo.png' %}" alt="EasyInvoice">
-        <h1>EasyInvoice</h1>
-        <p>Créez vos factures professionnelles en quelques clics</p>
-        <div>
-            <a href="{% url 'CORE:register' %}" class="btn btn-hero">
-                <i class="fas fa-user-plus me-2"></i>
-                Créer un compte
-            </a>
-            <a href="{% url 'CORE:login' %}" class="btn btn-hero">
-                <i class="fas fa-sign-in-alt me-2"></i>
-                Se connecter
-            </a>
+        <div class="hero-inner">
+            <div class="row align-items-center">
+                <div class="col-lg-7 col-md-12">
+                    <h1 class="hero-title"><span class="brand-gradient">fluktura</span> — créez, envoyez et suivez vos factures</h1>
+                    <p class="hero-subtitle">La solution rapide et mobile‑first pour générer des factures professionnelles, suivre les paiements et gérer vos clients en un clin d'œil.</p>
+                    <div class="hero-actions d-flex flex-wrap gap-2 mb-3">
+                        <a href="{% url 'CORE:register' %}" class="btn btn-cta-primary">
+                            <i class="fas fa-rocket me-2"></i> Commencer gratuitement
+                        </a>
+                        <a href="{% url 'CORE:login' %}" class="btn btn-cta-secondary">
+                            <i class="fas fa-play me-2"></i> Voir comment ça marche
+                        </a>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 justify-content-start justify-content-md-center justify-content-lg-start">
+                        <span class="badge-chip"><i class="fas fa-mobile-alt me-1"></i> Mobile‑first</span>
+                        <span class="badge-chip"><i class="fas fa-file-pdf me-1"></i> PDF instantané</span>
+                        <span class="badge-chip"><i class="fas fa-gift me-1"></i> 100% gratuit</span>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-12 text-lg-end text-center mt-4 mt-lg-0">
+                    <img class="invoice-shot w-100 mt-5" src="{% static 'CORE/img/invoice_example.png' %}" alt="Exemple de facture fluktura" onerror="this.style.display='none'">
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Features -->
-<div class="features-section">
+<!-- HOW IT WORKS -->
+<section class="section" style="background: #0b1020;">
     <div class="container">
-        <h2 class="text-center mb-5" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 2.5rem;">
-            Pourquoi EasyInvoice ?
-        </h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <div class="feature-icon">
-                        <i class="fas fa-file-invoice" style="color: var(--blue-primary);"></i>
-                    </div>
-                    <h3 class="h5 mb-3" style="font-weight: 600;">Factures professionnelles</h3>
-                    <p class="text-muted">Créez des factures conformes à la législation française avec tous les champs obligatoires.</p>
-                </div>
+        <h2 class="section-title text-white text-center">Comment ça marche</h2>
+        <p class="section-subtitle text-center text-white-50">Inscrivez‑vous, remplissez votre profil émetteur, créez votre première facture et suivez l'état des paiements.</p>
+        <div class="steps-wrap">
+            <div class="step-card">
+                <div class="step-badge"><i class="fas fa-user-plus"></i></div>
+                <h3 class="step-title h5 mb-2">1. Créer un compte</h3>
+                <p class="step-text">Inscription en 1 minute. Accédez à votre tableau de bord sécurisé depuis n’importe quel appareil.</p>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <div class="feature-icon">
-                        <i class="fas fa-database" style="color: var(--green-accent);"></i>
-                    </div>
-                    <h3 class="h5 mb-3" style="font-weight: 600;">Historique complet</h3>
-                    <p class="text-muted">Sauvegardez et consultez toutes vos factures à tout moment depuis votre tableau de bord.</p>
-                </div>
+            <div class="step-card">
+                <div class="step-badge"><i class="fas fa-id-card"></i></div>
+                <h3 class="step-title h5 mb-2">2. Renseigner votre profil</h3>
+                <p class="step-text">Nom d’entreprise, SIRET, adresse… Vos infos sont préremplies dans chaque facture.</p>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line" style="color: #F59E0B;"></i>
-                    </div>
-                    <h3 class="h5 mb-3" style="font-weight: 600;">Suivi des paiements</h3>
-                    <p class="text-muted">Gérez l'état de vos factures : brouillon, envoyée, payée, en retard.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <div class="feature-icon">
-                        <i class="fas fa-users" style="color: #8B5CF6;"></i>
-                    </div>
-                    <h3 class="h5 mb-3" style="font-weight: 600;">Gestion des clients</h3>
-                    <p class="text-muted">Enregistrez vos clients récurrents pour créer des factures plus rapidement.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <div class="feature-icon">
-                        <i class="fas fa-file-pdf" style="color: #EF4444;"></i>
-                    </div>
-                    <h3 class="h5 mb-3" style="font-weight: 600;">Export PDF</h3>
-                    <p class="text-muted">Téléchargez vos factures au format PDF prêt à être envoyé à vos clients.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card text-center">
-                    <div class="feature-icon">
-                        <i class="fas fa-gift" style="color: #10B981;"></i>
-                    </div>
-                    <h3 class="h5 mb-3" style="font-weight: 600;">100% Gratuit</h3>
-                    <p class="text-muted">Aucun frais caché, aucun abonnement. Utilisez EasyInvoice gratuitement.</p>
-                </div>
+            <div class="step-card">
+                <div class="step-badge"><i class="fas fa-file-invoice"></i></div>
+                <h3 class="step-title h5 mb-2">3. Générer & envoyer</h3>
+                <p class="step-text">Ajoutez vos lignes, générez le PDF, envoyez au client et suivez le statut (payée, en retard…).</p>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section contact">
+    <div class="container">
+        <h2 class="section-title text-white text-center">Contact</h2>
+        <p class="section-subtitle text-center text-white-50">Une question sur fluktura ? Envoyez‑nous un message, nous répondons rapidement.</p>
+        <form class="contact-card" method="post" action="{% url 'CORE:contact_submit' %}">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label text-white-50">Prénom</label>
+                    <input type="text" name="first_name" class="form-control" placeholder="John" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-white-50">Nom</label>
+                    <input type="text" name="last_name" class="form-control" placeholder="Doe">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-white-50">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="john.doe@example.com" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label text-white-50">Téléphone</label>
+                    <input type="text" name="phone" class="form-control" placeholder="+33 6 12 34 56 78">
+                </div>
+                <div class="col-12">
+                    <label class="form-label text-white-50">Message</label>
+                    <textarea rows="5" name="message" class="form-control" placeholder="Comment pouvons‑nous vous aider ?" required></textarea>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-cta-primary">
+                        <i class="fas fa-paper-plane me-2"></i> Envoyer
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
 
 <!-- CTA -->
-<div class="cta-section">
-    <div class="container text-center">
-        <h2 class="mb-4" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 2rem;">
-            Prêt à commencer ?
-        </h2>
-        <a href="{% url 'CORE:register' %}" class="btn btn-primary btn-lg px-5">
-            <i class="fas fa-rocket me-2"></i>
-            Créer mon compte gratuitement
+<section class="cta">
+    <div class="container">
+        <h2 class="section-title mb-3" style="font-size: 2rem;">Prêt à commencer ?</h2>
+        <a href="{% url 'CORE:register' %}" class="btn btn-cta-primary btn-lg px-5">
+            <i class="fas fa-rocket me-2"></i> Créer mon compte gratuitement
         </a>
     </div>
-</div>
+</section>
 
 <!-- Footer -->
 <footer>
-    <div class="container text-center">
-        <p class="mb-2">EasyInvoice © 2025 — Outil gratuit pour freelances et auto-entrepreneurs.</p>
-        <p class="mb-2">
-            <a href="mailto:aliou@gabithex.fr"><i class="fas fa-envelope me-1"></i> aliou@gabithex.fr</a> | 
-            <a href="mailto:contact@easyinvoice.fr"><i class="fas fa-envelope me-1"></i> contact@easyinvoice.fr</a>
-        </p>
-        <p class="mb-2"><i class="fas fa-map-marker-alt me-1"></i> 59 rue de Ponthieu, 75008 Paris</p>
-        <p><a href="{% url 'CORE:privacy_policy' %}"><i class="fas fa-shield-alt me-1"></i> Politique de confidentialité</a></p>
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <img class="footer-logo" src="{% static 'CORE/img/logobg.png' %}" alt="fluktura logo">
+                <p class="mb-2">fluktura — créez des factures pro en quelques clics, depuis votre téléphone.</p>
+                <div class="d-flex gap-2">
+                    <a href="#" class="text-white-50"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white-50"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="text-white-50"><i class="fab fa-facebook"></i></a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-title">Liens utiles</div>
+                <div class="footer-links">
+                    <a href="{% url 'CORE:login' %}">Se connecter</a>
+                    <a href="{% url 'CORE:register' %}">Créer un compte</a>
+                    <a href="{% url 'CORE:invoice_list' %}">Mes factures</a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-title">Contact</div>
+                <div class="footer-links">
+                    <a href="mailto:aliou@gabithex.fr"><i class="fas fa-envelope me-1"></i> aliou@gabithex.fr</a>
+                    <a href="mailto:info@fluktura.fr"><i class="fas fa-envelope me-1"></i> info@fluktura.fr</a>
+                    <span class="d-block text-white-50"><i class="fas fa-map-marker-alt me-1"></i> 59 rue de Ponthieu, 75008 Paris</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-note text-center">© 2025 fluktura — Tous droits réservés · <a href="{% url 'CORE:privacy_policy' %}">Politique de confidentialité</a></div>
     </div>
 </footer>
 {% endblock %}

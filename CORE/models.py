@@ -162,3 +162,22 @@ class InvoiceItem(models.Model):
         verbose_name = "Ligne de facture"
         verbose_name_plural = "Lignes de facture"
         ordering = ['order', 'id']
+
+
+class ContactMessage(models.Model):
+    """Messages envoyés depuis la page d'accueil (contact)"""
+    first_name = models.CharField(max_length=100, verbose_name="Prénom")
+    last_name = models.CharField(max_length=100, verbose_name="Nom", blank=True)
+    email = models.EmailField(verbose_name="Email")
+    phone = models.CharField(max_length=30, verbose_name="Téléphone", blank=True)
+    message = models.TextField(verbose_name="Message")
+    is_read = models.BooleanField(default=False, verbose_name="Lu")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.email}"
+
+    class Meta:
+        verbose_name = "Message de contact"
+        verbose_name_plural = "Messages de contact"
+        ordering = ['-created_at']

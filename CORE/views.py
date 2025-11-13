@@ -22,8 +22,8 @@ except (ImportError, OSError) as e:
     WEASYPRINT_AVAILABLE = False
     print(f"WeasyPrint non disponible: {e}")
 
-from .forms import InvoiceForm, ItemForm, UserProfileForm, ClientForm
-from .models import Invoice, InvoiceItem, UserProfile, Client
+from .forms import InvoiceForm, ItemForm, UserProfileForm, ClientForm, ContactForm
+from .models import Invoice, InvoiceItem, UserProfile, Client, ContactMessage
 
 
 def _build_items_from_formset(items_formset):
@@ -468,3 +468,17 @@ def home(request):
     if request.user.is_authenticated:
         return redirect('CORE:dashboard')
     return render(request, 'CORE/home.html')
+
+
+@csrf_protect
+def contact_submit(request):
+    """Réception du formulaire de contact public et enregistrement en base"""
+    if request.method != 'POST':
+        return redirect('CORE:home')
+    form = ContactForm(request.POST)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Merci, votre message a bien été envoyé. Nous vous répondrons rapidement.")
+    else:
+        messages.error(request, "Le formulaire contient des erreurs. Merci de vérifier vos informations.")
+    return redirect('CORE:home')
