@@ -10,6 +10,32 @@
     <link rel="icon" type="image/png" href="{% static 'CORE/img/favikon.png' %}">
     <link rel="shortcut icon" type="image/png" href="{% static 'CORE/img/favikon.png' %}">
     
+    <!-- Meta Description -->
+    <meta name="description" content="{% block description %}fluktura — Créez, envoyez et suivez vos factures professionnelles en quelques clics. Solution mobile-first, 100% gratuite.{% endblock %}">
+    
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta property="og:title" content="{% block og_title %}fluktura — Générateur de factures gratuit{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Créez, envoyez et suivez vos factures professionnelles en quelques clics. Solution mobile-first, 100% gratuite.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% static 'CORE/img/logobg.png' %}{% endblock %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="fluktura">
+    <meta property="og:locale" content="fr_FR">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{% block twitter_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta name="twitter:title" content="{% block twitter_title %}fluktura — Générateur de factures gratuit{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Créez, envoyez et suivez vos factures professionnelles en quelques clics. Solution mobile-first, 100% gratuite.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{% static 'CORE/img/logobg.png' %}{% endblock %}">
+    
+    <!-- Additional Meta -->
+    <meta name="author" content="fluktura">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{% block canonical %}{{ request.build_absolute_uri }}{% endblock %}">
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
